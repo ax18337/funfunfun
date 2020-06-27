@@ -4,7 +4,6 @@ import 'package:flame/game.dart';
 import 'components/background.dart';
 
 class GameTime extends Game {
-
   GameTime() {
     initialize;
   }
@@ -29,11 +28,15 @@ class GameTime extends Game {
 
   @override
   void render(Canvas c) {
-    background.render(c);
+    if (background != null) {
+      background.render(c);
+    }
   }
 
   @override
   void update(double t) {
-    background .update(t);
+    if (background != null) {
+      background.update(t);
+    }
   }
 }
