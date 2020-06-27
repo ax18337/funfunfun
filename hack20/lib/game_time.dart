@@ -4,7 +4,10 @@ import 'package:flame/game.dart';
 import 'package:flame/keyboard.dart';
 import 'package:flutter/src/services/raw_keyboard.dart';
 import 'components/background.dart';
+import 'components/earth.dart';
 import 'components/spaceship.dart';
+
+enum Mode { retro, future }
 
 class GameTime extends Game with KeyboardEvents {
   GameTime() {
@@ -12,16 +15,20 @@ class GameTime extends Game with KeyboardEvents {
   }
 
   Size screenSize;
+  Mode mode;
 
   // components
   Background background;
+  Earth earth;
   Spaceship spaceship;
 
   Future<void> get initialize async {
     final _size = await Flame.util.initialDimensions();
     resize(_size);
 
+    mode = Mode.retro;
     background = Background(gameTime: this);
+    earth = Earth(gameTime: this, speed: 0.1, segments: 10);
     spaceship = Spaceship(gameTime: this, center: Offset(_size.width/2, _size.width/2), size: 10);
   }
 
@@ -36,6 +43,9 @@ class GameTime extends Game with KeyboardEvents {
     if (background != null) {
       background.render(c);
     }
+    if (earth != null) {
+      earth.render(c);
+    }
     if (spaceship != null) {
       spaceship.render(c);
     }
@@ -45,6 +55,9 @@ class GameTime extends Game with KeyboardEvents {
   void update(double t) {
     if (background != null) {
       background.update(t);
+    }
+    if (earth != null) {
+      earth.update(t);
     }
     if (spaceship != null) {
       spaceship.update(t);

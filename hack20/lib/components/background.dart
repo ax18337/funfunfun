@@ -63,8 +63,8 @@ class Background {
   void _addStar() {
     var x = _random.nextDouble() * gameTime.screenSize.width;
     var y = _random.nextDouble() * gameTime.screenSize.height;
-    var dx = _random.nextDouble() * 10.001;
-    var dy = _random.nextDouble() * 10.001;
+    var dx = (_random.nextDouble() - 0.5) * 2;
+    var dy = (_random.nextDouble() - 0.5) * 2;
     var size = _random.nextDouble() * 5;
 
     Star star = Star(

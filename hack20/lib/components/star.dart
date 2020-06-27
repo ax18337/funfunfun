@@ -32,10 +32,16 @@ class Star {
   }
 
   void render(Canvas c) {
-    Path path = Path();
-    path.addOval(_rect);
-    c.drawShadow(path, WHITE, 0.0, false);
-    c.drawOval(_rect, _paint);
+    if (gameTime.mode == Mode.retro) {
+      Path path = Path();
+      path.addRect(_rect);
+      c.drawRect(_rect, _paint);
+    } else {
+      Path path = Path();
+      path.addOval(_rect);
+      c.drawShadow(path, WHITE, 0.0, false);
+      c.drawOval(_rect, _paint);
+    }
   }
 
   void update(double t) {
