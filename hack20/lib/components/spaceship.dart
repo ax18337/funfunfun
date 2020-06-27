@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+import 'dart:typed_data';
 import 'dart:ui';
 import 'package:flutter/widgets.dart';
 
@@ -34,6 +36,7 @@ class Spaceship {
   Rect _rect;
   Paint _retroPaint;
   Paint _futurePaint;
+
   Offset speed;
 
   Offset get center {
@@ -45,9 +48,9 @@ class Spaceship {
 
     var builder = ParagraphBuilder(
         ParagraphStyle(textAlign: TextAlign.center, fontSize: 24, maxLines: 1))
-      ..addText("speed x = ${speed.dx} y = ${speed.dy}");
+      ..addText("speed x = ${speed.dx.round()} y = ${speed.dy.round()} direction = ${speed.direction.round()}");
 
-    var paragraph = builder.build()..layout(ParagraphConstraints(width: 200));
+    var paragraph = builder.build()..layout(ParagraphConstraints(width: 500));
     c.drawParagraph(paragraph, Offset(20, 20));
   }
 
@@ -88,6 +91,12 @@ class Spaceship {
     path.lineTo(_rect.center.dx, _rect.bottom - width * 0.5);
     path.lineTo(_rect.center.dx - width / 2, _rect.bottom);
     path.close();
+
+    if (speed.dx != 0 || speed.dy != 0) {
+      c.translate(_rect.center.dx, _rect.center.dy);
+      c.rotate(speed.direction+(90 * math.pi / 180));
+      c.translate(-_rect.center.dx, -_rect.center.dy);
+    }
     c.drawPath(path, _retroPaint);
 
     c.restore();
