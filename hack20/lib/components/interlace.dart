@@ -33,12 +33,12 @@ class Interlace {
     switch (gameTime.mode) {
       case Mode.retro:
         _paint.color = BLACKISH;
+        c.drawPath(_path, _paint);
         break;
       case Mode.future:
         _paint.color = BLUEISH;
         break;
     }
-    c.drawPath(_path, _paint);
   }
 
   void update(double t) {}

@@ -33,7 +33,7 @@ class Spaceship {
       ..color = GREEN
       ..strokeCap = StrokeCap.round
       ..strokeJoin = StrokeJoin.round
-      ..strokeWidth = 3
+      ..strokeWidth = 2
       ..isAntiAlias = true;
     _glowPaint = Paint()
       ..style = PaintingStyle.stroke
@@ -41,7 +41,6 @@ class Spaceship {
       ..strokeCap = StrokeCap.round
       ..strokeJoin = StrokeJoin.round
       ..strokeWidth = 4
-      ..maskFilter = MaskFilter.blur(BlurStyle.normal, 50)
       ..isAntiAlias = true;
     _center = center;
     _path = _createPath();
@@ -129,11 +128,26 @@ class Spaceship {
     var translate = _rect.center - _center;
     c.translate(translate.dx, translate.dy);
     if (direction != _radians(270)) {
-      c.translate(_rect.center.dx, _rect.center.dy);
+      c.translate(_center.dx, _center.dy);
       c.rotate(direction + _radians(90));
-      c.translate(-_rect.center.dx, -_rect.center.dy);
+      c.translate(-_center.dx, -_center.dy);
     }
     c.drawPath(_path, _backPaint);
+
+    // neon blur
+    _glowPaint.color = _futurePaint.color.withOpacity(0.1);
+    _glowPaint.strokeWidth = 6;
+    c.drawPath(_path, _glowPaint);
+    _glowPaint.color = _futurePaint.color.withOpacity(0.2);
+    _glowPaint.strokeWidth = 5;
+    c.drawPath(_path, _glowPaint);
+    _glowPaint.color = _futurePaint.color.withOpacity(0.3);
+    _glowPaint.strokeWidth = 4;
+    c.drawPath(_path, _glowPaint);
+    _glowPaint.color = _futurePaint.color.withOpacity(0.35);
+    _glowPaint.strokeWidth = 3;
+    c.drawPath(_path, _glowPaint);
+
     c.drawPath(_path, _glowPaint);
     c.drawPath(_path, _futurePaint);
     c.restore();
@@ -150,8 +164,9 @@ class Spaceship {
     return path;
   }
 
-  static const double SPEED_BOOST = 20;
+  static const double SPEED_BOOST = 50;
   static const double ROTATION_ANGLE = 10;
+  static const double MAX_SPEED = 150;
 
   void right() {
     direction += _radians(ROTATION_ANGLE);
@@ -168,11 +183,21 @@ class Spaceship {
   }
 
   void down() {
-    speed = speed.translate(-math.cos(direction) * SPEED_BOOST, -math.sin(direction) * SPEED_BOOST);
+    speed = speed.translate(
+        -math.cos(direction) * SPEED_BOOST, -math.sin(direction) * SPEED_BOOST);
+    if (speed.distance > MAX_SPEED) {
+      var norm = MAX_SPEED / speed.distance;
+      speed = speed.scale(norm, norm);
+    }
   }
 
   void up() {
-    speed = speed.translate(math.cos(direction) * SPEED_BOOST, math.sin(direction) * SPEED_BOOST);
+    speed = speed.translate(
+        math.cos(direction) * SPEED_BOOST, math.sin(direction) * SPEED_BOOST);
+    if (speed.distance > MAX_SPEED) {
+      var norm = MAX_SPEED / speed.distance;
+      speed = speed.scale(norm, norm);
+    }
   }
 
   void _reset() {
