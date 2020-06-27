@@ -3,6 +3,7 @@ import 'package:flame/flame.dart';
 import 'package:flame/game.dart';
 import 'package:flame/keyboard.dart';
 import 'package:flutter/src/services/raw_keyboard.dart';
+import 'package:hack20/components/interlace.dart';
 import 'package:hack20/components/trash_pile.dart';
 import 'components/background.dart';
 import 'components/earth.dart';
@@ -24,6 +25,9 @@ class GameTime extends Game with KeyboardEvents {
   Spaceship spaceship;
   TrashPile trashPile;
 
+  // effects
+  Interlace interlace;
+
   // level
   int level;
 
@@ -32,6 +36,8 @@ class GameTime extends Game with KeyboardEvents {
     resize(_size);
 
     mode = Mode.retro;
+
+    // components
     background = Background(gameTime: this);
     earth = Earth(
       gameTime: this,
@@ -45,6 +51,9 @@ class GameTime extends Game with KeyboardEvents {
         size: 30);
     trashPile = TrashPile(gameTime: this);
 
+    // effects
+    interlace = Interlace(gameTime: this, size: 2);
+
     level = 1;
   }
 
@@ -56,6 +65,7 @@ class GameTime extends Game with KeyboardEvents {
 
   @override
   void render(Canvas c) {
+    // components
     if (background != null) {
       background.render(c);
     }
@@ -68,10 +78,16 @@ class GameTime extends Game with KeyboardEvents {
     if (spaceship != null) {
       spaceship.render(c);
     }
+
+    // efffects
+    if (interlace != null) {
+      interlace.render(c);
+    }
   }
 
   @override
   void update(double t) {
+    // components
     if (background != null) {
       background.update(t);
     }
@@ -83,6 +99,11 @@ class GameTime extends Game with KeyboardEvents {
     }
     if (spaceship != null) {
       spaceship.update(t);
+    }
+
+    // efffects
+    if (interlace != null) {
+      interlace.update(t);
     }
   }
 

@@ -8,6 +8,8 @@ import '../game_time.dart';
 const WHITE = Color(0xffffffff);
 const GREEN = Color(0xff44ff66);
 
+const BLACK = Color(0xff000000);
+
 class Spaceship {
   Spaceship({@required this.gameTime, Offset center, double size}) {
     _rect = Rect.fromCenter(
@@ -15,6 +17,10 @@ class Spaceship {
       width: size,
       height: size,
     );
+    _backPaint = Paint()
+      ..style = PaintingStyle.fill
+      ..color = BLACK
+      ..isAntiAlias = false;
     _retroPaint = Paint()
       ..style = PaintingStyle.stroke
       ..color = WHITE
@@ -28,18 +34,32 @@ class Spaceship {
       ..strokeCap = StrokeCap.round
       ..strokeJoin = StrokeJoin.round
       ..strokeWidth = 3
-      ..isAntiAlias = false;
+      ..isAntiAlias = true;
+    _glowPaint = Paint()
+      ..style = PaintingStyle.stroke
+      ..color = GREEN.withOpacity(0.6)
+      ..strokeCap = StrokeCap.round
+      ..strokeJoin = StrokeJoin.round
+      ..strokeWidth = 4
+      ..maskFilter = MaskFilter.blur(BlurStyle.normal, 50)
+      ..isAntiAlias = true;
+    _center = center;
+    _path = _createPath();
     speed = Offset.zero;
     direction = _radians(270);
   }
 
   final GameTime gameTime;
   Rect _rect;
+  Paint _backPaint;
   Paint _retroPaint;
   Paint _futurePaint;
-
+  Paint _glowPaint;
   Offset speed;
   double direction;
+
+  Offset _center;
+  Path _path;
 
   Offset get center {
     return _rect.center;
@@ -50,7 +70,8 @@ class Spaceship {
 
     var builder = ParagraphBuilder(
         ParagraphStyle(textAlign: TextAlign.center, fontSize: 24, maxLines: 1))
-      ..addText("speed x = ${speed.dx.round()} y = ${speed.dy.round()} direction = ${direction.round()}");
+      ..addText(
+          "speed x = ${speed.dx.round()} y = ${speed.dy.round()} direction = ${direction.round()}");
 
     var paragraph = builder.build()..layout(ParagraphConstraints(width: 500));
     c.drawParagraph(paragraph, Offset(20, 20));
@@ -83,32 +104,51 @@ class Spaceship {
     }
   }
 
-  void _drawShipRetro(Canvas c) {
-    c.save();
-
-    double width = _rect.width * 0.4;
-    Path path = Path();
-    path.moveTo(_rect.center.dx, _rect.top);
-    path.lineTo(_rect.center.dx + width / 2, _rect.bottom);
-    path.lineTo(_rect.center.dx, _rect.bottom - width * 0.5);
-    path.lineTo(_rect.center.dx - width / 2, _rect.bottom);
-    path.close();
-
-    if (direction != _radians(270)) {
-      c.translate(_rect.center.dx, _rect.center.dy);
-      c.rotate(direction+_radians(90));
-      c.translate(-_rect.center.dx, -_rect.center.dy);
-    }
-    c.drawPath(path, _retroPaint);
-
-    c.restore();
-  }
-
   static double _radians(double angle) {
     return angle * math.pi / 180;
   }
 
-  void _drawShipFuture(Canvas c) {}
+  void _drawShipRetro(Canvas c) {
+    c.save();
+
+    var translate = _rect.center - _center;
+    c.translate(translate.dx, translate.dy);
+    if (direction != _radians(270)) {
+      c.translate(_center.dx, _center.dy);
+      c.rotate(direction + _radians(90));
+      c.translate(-_center.dx, -_center.dy);
+    }
+    c.drawPath(_path, _backPaint);
+    c.drawPath(_path, _retroPaint);
+    c.restore();
+  }
+
+  void _drawShipFuture(Canvas c) {
+    c.save();
+
+    var translate = _rect.center - _center;
+    c.translate(translate.dx, translate.dy);
+    if (direction != _radians(270)) {
+      c.translate(_rect.center.dx, _rect.center.dy);
+      c.rotate(direction + _radians(90));
+      c.translate(-_rect.center.dx, -_rect.center.dy);
+    }
+    c.drawPath(_path, _backPaint);
+    c.drawPath(_path, _glowPaint);
+    c.drawPath(_path, _futurePaint);
+    c.restore();
+  }
+
+  Path _createPath() {
+    double width = _rect.width * 0.5;
+    Path path = Path();
+    path.moveTo(_rect.center.dx, _rect.top);
+    path.lineTo(_rect.center.dx + width / 2, _rect.bottom);
+    path.lineTo(_rect.center.dx, _rect.bottom - width * 0.4);
+    path.lineTo(_rect.center.dx - width / 2, _rect.bottom);
+    path.close();
+    return path;
+  }
 
   static const double SPEED_BOOST = 20;
   static const double ROTATION_ANGLE = 10;

@@ -44,6 +44,14 @@ class Trash {
       ..strokeJoin = StrokeJoin.round
       ..strokeWidth = 2
       ..isAntiAlias = false;
+    _glowPaint = Paint()
+      ..style = PaintingStyle.stroke
+      ..color = GREEN.withOpacity(0.6)
+      ..strokeCap = StrokeCap.round
+      ..strokeJoin = StrokeJoin.round
+      ..strokeWidth = 3
+      ..maskFilter = MaskFilter.blur(BlurStyle.normal, 50)
+      ..isAntiAlias = true;
     _center = center;
     _path = _createPath();
   }
@@ -53,6 +61,7 @@ class Trash {
   Paint _backPaint;
   Paint _retroPaint;
   Paint _futurePaint;
+  Paint _glowPaint;
   Offset speed;
 
   Path _path;
@@ -74,7 +83,7 @@ class Trash {
     if (gameTime.mode == Mode.retro) {
       c.drawPath(_path, _retroPaint);
     } else {
-      c.drawShadow(_path, _futurePaint.color, 0.0, false);
+      c.drawPath(_path, _glowPaint);
       c.drawPath(_path, _futurePaint);
     }
     c.restore();
@@ -110,6 +119,7 @@ class Trash {
       color = YELLOW;
     }
     _futurePaint.color = color;
+    _glowPaint.color = color.withOpacity(0.6);
   }
 
   Path _createPath() {

@@ -6,6 +6,7 @@ import '../game_time.dart';
 import 'star.dart';
 
 const BLACK = Color(0xff000000);
+const DEEPBLUE = Color(0xff010b19);
 const numOfStars = 200;
 
 class Background {
@@ -34,6 +35,14 @@ class Background {
   List<Star> _stars;
 
   void render(Canvas c) {
+    switch (gameTime.mode) {
+      case Mode.retro:
+        _paint.color = BLACK;
+        break;
+      case Mode.future:
+        _paint.color = DEEPBLUE;
+        break;
+    }
     c.drawRect(_bgRect, _paint);
     for (var star in _stars) {
       star.render(c);

@@ -10,6 +10,7 @@ const ORANGE = Color(0xfffc6e22);
 const RED = Color(0xffce0000);
 
 const BLACK = Color(0xfff000000);
+const DEEPBLUE = Color(0xff010b19);
 const WHITE = Color(0xfffffffff);
 
 const numOfStars = 200;
@@ -99,6 +100,7 @@ class Earth {
     Path area = Path();
     area.addPolygon(points, true);
 
+    _areaPaint.color = BLACK;
     c.drawPath(area, _areaPaint);
     c.drawPath(area, _retroPaint);
 
@@ -109,6 +111,7 @@ class Earth {
     // 1. background
     Path area = Path();
     area.addOval(_rect);
+    _areaPaint.color = DEEPBLUE;
     c.drawPath(area, _areaPaint);
     c.drawPath(area, _futurePaint);
   }
