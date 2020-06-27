@@ -30,6 +30,7 @@ class Spaceship {
       ..strokeWidth = 3
       ..isAntiAlias = false;
     speed = Offset.zero;
+    direction = _radians(270);
   }
 
   final GameTime gameTime;
@@ -38,6 +39,7 @@ class Spaceship {
   Paint _futurePaint;
 
   Offset speed;
+  double direction;
 
   Offset get center {
     return _rect.center;
@@ -48,7 +50,7 @@ class Spaceship {
 
     var builder = ParagraphBuilder(
         ParagraphStyle(textAlign: TextAlign.center, fontSize: 24, maxLines: 1))
-      ..addText("speed x = ${speed.dx.round()} y = ${speed.dy.round()} direction = ${speed.direction.round()}");
+      ..addText("speed x = ${speed.dx.round()} y = ${speed.dy.round()} direction = ${direction.round()}");
 
     var paragraph = builder.build()..layout(ParagraphConstraints(width: 500));
     c.drawParagraph(paragraph, Offset(20, 20));
@@ -92,14 +94,18 @@ class Spaceship {
     path.lineTo(_rect.center.dx - width / 2, _rect.bottom);
     path.close();
 
-    if (speed.dx != 0 || speed.dy != 0) {
+    if (direction != _radians(270)) {
       c.translate(_rect.center.dx, _rect.center.dy);
-      c.rotate(speed.direction+(90 * math.pi / 180));
+      c.rotate(direction+_radians(90));
       c.translate(-_rect.center.dx, -_rect.center.dy);
     }
     c.drawPath(path, _retroPaint);
 
     c.restore();
+  }
+
+  static double _radians(double angle) {
+    return angle * math.pi / 180;
   }
 
   void _drawShipFuture(Canvas c) {}
@@ -109,71 +115,80 @@ class Spaceship {
   static const double MAX_SPEED = 150;
 
   void right() {
-    if (speed.dx == 0) {
-      speed = speed.translate(SPEED_BOOST, 0);
-    } else if (speed.dx > 0) {
-      speed = speed.scale(1 + SPEED_INCREASE_FACTOR, 1);
-      if (speed.dx > MAX_SPEED) {
-        speed = Offset(MAX_SPEED, speed.dy);
-      }
-    } else {
-      if (speed.dx > -SPEED_BOOST) {
-        speed = speed.translate(-speed.dx, 0);
-      } else {
-        speed = speed.scale(1 - SPEED_INCREASE_FACTOR, 1);
-      }
+    direction += _radians(10);
+    if (direction > _radians(360)) {
+      direction = direction - _radians(360);
     }
+//    if (speed.dx == 0) {
+//      speed = speed.translate(SPEED_BOOST, 0);
+//    } else if (speed.dx > 0) {
+//      speed = speed.scale(1 + SPEED_INCREASE_FACTOR, 1);
+//      if (speed.dx > MAX_SPEED) {
+//        speed = Offset(MAX_SPEED, speed.dy);
+//      }
+//    } else {
+//      if (speed.dx > -SPEED_BOOST) {
+//        speed = speed.translate(-speed.dx, 0);
+//      } else {
+//        speed = speed.scale(1 - SPEED_INCREASE_FACTOR, 1);
+//      }
+//    }
   }
 
   void left() {
-    if (speed.dx == 0) {
-      speed = speed.translate(-SPEED_BOOST, 0);
-    } else if (speed.dx < 0) {
-      speed = speed.scale(1 + SPEED_INCREASE_FACTOR, 1);
-      if (speed.dx < -MAX_SPEED) {
-        speed = Offset(-MAX_SPEED, speed.dy);
-      }
-    } else {
-      if (speed.dx < SPEED_BOOST) {
-        speed = speed.translate(-speed.dx, 0);
-      } else {
-        speed = speed.scale(1 - SPEED_INCREASE_FACTOR, 1);
-      }
+    direction += _radians(-10);
+    if (direction < 0) {
+      direction = _radians(360) + direction;
     }
+//    if (speed.dx == 0) {
+//      speed = speed.translate(-SPEED_BOOST, 0);
+//    } else if (speed.dx < 0) {
+//      speed = speed.scale(1 + SPEED_INCREASE_FACTOR, 1);
+//      if (speed.dx < -MAX_SPEED) {
+//        speed = Offset(-MAX_SPEED, speed.dy);
+//      }
+//    } else {
+//      if (speed.dx < SPEED_BOOST) {
+//        speed = speed.translate(-speed.dx, 0);
+//      } else {
+//        speed = speed.scale(1 - SPEED_INCREASE_FACTOR, 1);
+//      }
+//    }
   }
 
   void down() {
-    if (speed.dy == 0) {
-      speed = speed.translate(0, SPEED_BOOST);
-    } else if (speed.dy > 0) {
-      speed = speed.scale(1, 1 + SPEED_INCREASE_FACTOR);
-      if (speed.dy > MAX_SPEED) {
-        speed = Offset(speed.dx, MAX_SPEED);
-      }
-    } else {
-      if (speed.dy > -SPEED_BOOST) {
-        speed = speed.translate(0, -speed.dy);
-      } else {
-        speed = speed.scale(1, 1 - SPEED_INCREASE_FACTOR);
-      }
-    }
+//    if (speed.dy == 0) {
+//      speed = speed.translate(0, SPEED_BOOST);
+//    } else if (speed.dy > 0) {
+//      speed = speed.scale(1, 1 + SPEED_INCREASE_FACTOR);
+//      if (speed.dy > MAX_SPEED) {
+//        speed = Offset(speed.dx, MAX_SPEED);
+//      }
+//    } else {
+//      if (speed.dy > -SPEED_BOOST) {
+//        speed = speed.translate(0, -speed.dy);
+//      } else {
+//        speed = speed.scale(1, 1 - SPEED_INCREASE_FACTOR);
+//      }
+//    }
   }
 
   void up() {
-    if (speed.dy == 0) {
-      speed = speed.translate(0, -SPEED_BOOST);
-    } else if (speed.dy < 0) {
-      speed = speed.scale(1, 1 + SPEED_INCREASE_FACTOR);
-      if (speed.dy < -MAX_SPEED) {
-        speed = Offset(speed.dx, -MAX_SPEED);
-      }
-    } else {
-      if (speed.dy < SPEED_BOOST) {
-        speed = speed.translate(0, -speed.dy);
-      } else {
-        speed = speed.scale(1, 1 - SPEED_INCREASE_FACTOR);
-      }
-    }
+    speed = speed.translate(math.cos(direction) * 10, math.sin(direction) * 10);
+//    if (speed.dy == 0) {
+//      speed = speed.translate(0, -SPEED_BOOST);
+//    } else if (speed.dy < 0) {
+//      speed = speed.scale(1, 1 + SPEED_INCREASE_FACTOR);
+//      if (speed.dy < -MAX_SPEED) {
+//        speed = Offset(speed.dx, -MAX_SPEED);
+//      }
+//    } else {
+//      if (speed.dy < SPEED_BOOST) {
+//        speed = speed.translate(0, -speed.dy);
+//      } else {
+//        speed = speed.scale(1, 1 - SPEED_INCREASE_FACTOR);
+//      }
+//    }
   }
 
   void _reset() {
