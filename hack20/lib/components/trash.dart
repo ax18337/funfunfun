@@ -50,7 +50,7 @@ class Trash {
       ..strokeCap = StrokeCap.round
       ..strokeJoin = StrokeJoin.round
       ..strokeWidth = 3
-      ..maskFilter = MaskFilter.blur(BlurStyle.normal, 50)
+      // ..maskFilter = MaskFilter.blur(BlurStyle.normal, 50)
       ..isAntiAlias = true;
     _center = center;
     _path = _createPath();
@@ -83,7 +83,20 @@ class Trash {
     if (gameTime.mode == Mode.retro) {
       c.drawPath(_path, _retroPaint);
     } else {
+      // neon blur
+      _glowPaint.color = _futurePaint.color.withOpacity(0.1);
+      _glowPaint.strokeWidth = 6;
       c.drawPath(_path, _glowPaint);
+      _glowPaint.color = _futurePaint.color.withOpacity(0.2);
+      _glowPaint.strokeWidth = 5;
+      c.drawPath(_path, _glowPaint);
+      _glowPaint.color = _futurePaint.color.withOpacity(0.3);
+      _glowPaint.strokeWidth = 4;
+      c.drawPath(_path, _glowPaint);
+      _glowPaint.color = _futurePaint.color.withOpacity(0.35);
+      _glowPaint.strokeWidth = 3;
+      c.drawPath(_path, _glowPaint);
+
       c.drawPath(_path, _futurePaint);
     }
     c.restore();
@@ -106,18 +119,28 @@ class Trash {
             gameTime.earth.size.width) *
         0.5;
     double distance = gameTime.earth.distance(center);
-
-    if (distance <= 0) {
-      // TODO - something
+    double position = distance / max * 4;
+    int step = position.floor();
+    double progress = position - step;
+    switch (step) {
+      case 0:
+        color = Color.lerp(RED, ORANGE, progress);
+        break;
+      case 1:
+        color = Color.lerp(ORANGE, YELLOW, progress);
+        break;
+      case 2:
+        color = Color.lerp(YELLOW, GREEN, progress);
+        break;
     }
 
-    if (distance > max * 0.25) {
-      color = RED;
-    } else if (distance > max * 0.5) {
-      color = ORANGE;
-    } else if (distance > max * 0.75) {
-      color = YELLOW;
-    }
+    // if (distance < max * 0.25) {
+    //   color = RED;
+    // } else if (distance < max * 0.5) {
+    //   color = ORANGE;
+    // } else if (distance < max * 0.75) {
+    //   color = YELLOW;
+    // }
     _futurePaint.color = color;
     _glowPaint.color = color.withOpacity(0.6);
   }

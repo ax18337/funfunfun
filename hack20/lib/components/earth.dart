@@ -40,6 +40,16 @@ class Earth {
     _futurePaint = Paint()
       ..style = PaintingStyle.stroke
       ..color = GREEN
+      ..strokeCap = StrokeCap.round
+      ..strokeJoin = StrokeJoin.round
+      ..strokeWidth = 2
+      ..isAntiAlias = true;
+    _glowPaint = Paint()
+      ..style = PaintingStyle.stroke
+      ..color = GREEN.withOpacity(0.6)
+      ..strokeCap = StrokeCap.round
+      ..strokeJoin = StrokeJoin.round
+      ..strokeWidth = 3
       ..isAntiAlias = true;
     _angle = 0;
     _pitch = 0;
@@ -53,6 +63,7 @@ class Earth {
   Paint _areaPaint;
   Paint _retroPaint;
   Paint _futurePaint;
+  Paint _glowPaint;
   double _angle;
   double _pitch;
 
@@ -113,6 +124,21 @@ class Earth {
     area.addOval(_rect);
     _areaPaint.color = DEEPBLUE;
     c.drawPath(area, _areaPaint);
+
+    // neon blur
+    _glowPaint.color = _futurePaint.color.withOpacity(0.1);
+    _glowPaint.strokeWidth = 6;
+    c.drawPath(area, _glowPaint);
+    _glowPaint.color = _futurePaint.color.withOpacity(0.2);
+    _glowPaint.strokeWidth = 5;
+    c.drawPath(area, _glowPaint);
+    _glowPaint.color = _futurePaint.color.withOpacity(0.3);
+    _glowPaint.strokeWidth = 4;
+    c.drawPath(area, _glowPaint);
+    _glowPaint.color = _futurePaint.color.withOpacity(0.35);
+    _glowPaint.strokeWidth = 3;
+    c.drawPath(area, _glowPaint);
+
     c.drawPath(area, _futurePaint);
   }
 

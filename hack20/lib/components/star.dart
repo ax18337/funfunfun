@@ -24,7 +24,7 @@ class Star {
     _glowPaint = Paint()
       ..style = PaintingStyle.fill
       ..color = LIGHTYELLOW.withOpacity(0.6)
-      ..maskFilter = MaskFilter.blur(BlurStyle.normal, 50)
+      // ..maskFilter = MaskFilter.blur(BlurStyle.normal, 50)
       ..isAntiAlias = true;
   }
 
@@ -46,7 +46,17 @@ class Star {
       _paint.color = LIGHTYELLOW;
       Path path = Path();
       path.addOval(_rect);
-      c.drawOval(_rect, _glowPaint);
+
+      _glowPaint.color = LIGHTYELLOW.withOpacity(0.1);
+      c.drawOval(_rect.inflate(1), _glowPaint);
+      _glowPaint.color = LIGHTYELLOW.withOpacity(0.2);
+      c.drawOval(_rect.inflate(1), _glowPaint);
+      _glowPaint.color = LIGHTYELLOW.withOpacity(0.3);
+      c.drawOval(_rect.inflate(1), _glowPaint);
+      _glowPaint.color = LIGHTYELLOW.withOpacity(0.35);
+      c.drawOval(_rect.inflate(1), _glowPaint);
+
+      // c.drawOval(_rect, _glowPaint);
       c.drawOval(_rect, _paint);
     }
   }
