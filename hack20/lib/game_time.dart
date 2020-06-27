@@ -66,45 +66,27 @@ class GameTime extends Game with KeyboardEvents {
   @override
   void render(Canvas c) {
     // components
-    if (background != null) {
-      background.render(c);
-    }
-    if (earth != null) {
-      earth.render(c);
-    }
-    if (trashPile != null) {
-      trashPile.render(c);
-    }
-    if (spaceship != null) {
-      spaceship.render(c);
-    }
-
+    background?.render(c);
+    earth?.render(c);
+    trashPile?.render(c);
+    spaceship?.render(c);
     // efffects
-    if (interlace != null) {
-      interlace.render(c);
+    interlace?.render(c);
+
+    if (trashPile != null) {
+      _drawScrore(c);
     }
   }
 
   @override
   void update(double t) {
     // components
-    if (background != null) {
-      background.update(t);
-    }
-    if (earth != null) {
-      earth.update(t);
-    }
-    if (trashPile != null) {
-      trashPile.update(t);
-    }
-    if (spaceship != null) {
-      spaceship.update(t);
-    }
-
+    background?.update(t);
+    earth?.update(t);
+    trashPile?.update(t);
+    spaceship?.update(t);
     // efffects
-    if (interlace != null) {
-      interlace.update(t);
-    }
+    interlace?.update(t);
   }
 
   @override
@@ -122,5 +104,20 @@ class GameTime extends Game with KeyboardEvents {
     } else if (event.data.keyLabel == "s") {
       spaceship.down();
     }
+  }
+
+  void _drawScrore(Canvas c) {
+    c.save();
+
+    var builder = ParagraphBuilder(
+        ParagraphStyle(textAlign: TextAlign.left, fontSize: 18, maxLines: 1))
+      ..addText("score = ${trashPile.score} pollution = ${trashPile.pollution} level = $level");
+
+    c.drawColor(Color(0xffffffff), BlendMode.color);
+
+    var paragraph = builder.build()..layout(ParagraphConstraints(width: 500));
+    c.drawParagraph(paragraph, Offset(20, 20));
+
+    c.restore();
   }
 }

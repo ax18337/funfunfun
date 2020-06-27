@@ -67,14 +67,6 @@ class Spaceship {
 
   void render(Canvas c) {
     _drawShip(c);
-
-    var builder = ParagraphBuilder(
-        ParagraphStyle(textAlign: TextAlign.center, fontSize: 24, maxLines: 1))
-      ..addText(
-          "speed x = ${speed.dx.round()} y = ${speed.dy.round()} direction = ${direction.round()}");
-
-    var paragraph = builder.build()..layout(ParagraphConstraints(width: 500));
-    c.drawParagraph(paragraph, Offset(20, 20));
   }
 
   void update(double t) {
