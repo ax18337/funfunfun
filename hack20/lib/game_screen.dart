@@ -11,5 +11,15 @@ class GameScreen extends StatefulWidget {
 
 class _GameScreenState extends State<GameScreen> {
   @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) => GameScreen._game.widget;
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
 }

@@ -1,7 +1,39 @@
 import 'dart:ui';
+import 'package:flame/flame.dart';
 import 'package:flame/game.dart';
+import 'components/background.dart';
 
 class GameTime extends Game {
-  void render(Canvas canvas) {}
-  void update(double t) {}
+
+  GameTime() {
+    initialize;
+  }
+
+  Size screenSize;
+
+  // components
+  Background background;
+
+  Future<void> get initialize async {
+    final _size = await Flame.util.initialDimensions();
+    resize(_size);
+
+    background = Background(gameTime: this);
+  }
+
+  @override
+  void resize(Size size) {
+    screenSize = size;
+    super.resize(size);
+  }
+
+  @override
+  void render(Canvas c) {
+    background.render(c);
+  }
+
+  @override
+  void update(double t) {
+    background .update(t);
+  }
 }
