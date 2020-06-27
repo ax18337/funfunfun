@@ -3,6 +3,7 @@ import 'package:flame/flame.dart';
 import 'package:flame/game.dart';
 import 'package:flame/keyboard.dart';
 import 'package:flutter/src/services/raw_keyboard.dart';
+import 'package:hack20/components/trash_pile.dart';
 import 'components/background.dart';
 import 'components/earth.dart';
 import 'components/spaceship.dart';
@@ -21,6 +22,10 @@ class GameTime extends Game with KeyboardEvents {
   Background background;
   Earth earth;
   Spaceship spaceship;
+  TrashPile trashPile;
+
+  // level
+  int level;
 
   Future<void> get initialize async {
     final _size = await Flame.util.initialDimensions();
@@ -28,11 +33,19 @@ class GameTime extends Game with KeyboardEvents {
 
     mode = Mode.retro;
     background = Background(gameTime: this);
-    earth = Earth(gameTime: this, speed: 0.1, segments: 10);
+    earth = Earth(
+      gameTime: this,
+      speed: 0.1,
+      segments: 10,
+      gravity: 9.81 * 50,
+    );
     spaceship = Spaceship(
         gameTime: this,
         center: Offset(_size.width / 2, _size.width / 2),
         size: 30);
+    trashPile = TrashPile(gameTime: this);
+
+    level = 1;
   }
 
   @override
@@ -49,6 +62,9 @@ class GameTime extends Game with KeyboardEvents {
     if (earth != null) {
       earth.render(c);
     }
+    if (trashPile != null) {
+      trashPile.render(c);
+    }
     if (spaceship != null) {
       spaceship.render(c);
     }
@@ -61,6 +77,9 @@ class GameTime extends Game with KeyboardEvents {
     }
     if (earth != null) {
       earth.update(t);
+    }
+    if (trashPile != null) {
+      trashPile.update(t);
     }
     if (spaceship != null) {
       spaceship.update(t);

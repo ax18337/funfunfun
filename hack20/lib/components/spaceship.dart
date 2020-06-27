@@ -185,4 +185,8 @@ class Spaceship {
     );
     speed = Offset.zero;
   }
+
+  double distance(Offset point) {
+    return (point - _rect.center).distance - _rect.width;
+  }
 }

@@ -7,7 +7,7 @@ import '../game_time.dart';
 const GREEN = Color(0xff7fff00);
 const YELLOW = Color(0xffd9eb4b);
 const ORANGE = Color(0xfffc6e22);
-const RED = Color(0xff02b8a2);
+const RED = Color(0xffce0000);
 
 const BLACK = Color(0xfff000000);
 const WHITE = Color(0xfffffffff);
@@ -19,11 +19,12 @@ class Earth {
     @required this.gameTime,
     @required this.speed,
     @required this.segments,
+    @required this.gravity,
   }) {
     _rect = Rect.fromCircle(
       center: Offset(
           gameTime.screenSize.width * 0.5, gameTime.screenSize.height * 0.5),
-      radius: min(gameTime.screenSize.width, gameTime.screenSize.height) * 0.2,
+      radius: min(gameTime.screenSize.width, gameTime.screenSize.height) * 0.1,
     );
     _areaPaint = Paint()
       ..style = PaintingStyle.fill
@@ -33,7 +34,7 @@ class Earth {
       ..color = WHITE
       ..strokeCap = StrokeCap.butt
       ..strokeJoin = StrokeJoin.bevel
-      ..strokeWidth = 1
+      ..strokeWidth = 2
       ..isAntiAlias = false;
     _futurePaint = Paint()
       ..style = PaintingStyle.stroke
@@ -46,6 +47,7 @@ class Earth {
   final GameTime gameTime;
   double speed;
   int segments;
+  double gravity;
   Rect _rect;
   Paint _areaPaint;
   Paint _retroPaint;
@@ -109,5 +111,27 @@ class Earth {
     area.addOval(_rect);
     c.drawPath(area, _areaPaint);
     c.drawPath(area, _futurePaint);
+  }
+
+  Offset gravityStrenght(Offset point) {
+    Offset direction = _rect.center - point;
+    double relativeDistance = direction.distance / _rect.width / 0.5;
+    double strength = gravity / (relativeDistance * relativeDistance);
+    var norm = 1 / direction.distance;
+    direction = direction.scale(norm, norm);
+    direction = direction.scale(strength, strength);
+    return direction;
+  }
+
+  double distance(Offset point) {
+    return (point - _rect.center).distance - _rect.width * 0.5;
+  }
+
+  Offset get center {
+    return _rect.center;
+  }
+
+  Size get size {
+    return _rect.size;
   }
 }
