@@ -29,7 +29,10 @@ class GameTime extends Game with KeyboardEvents {
     mode = Mode.retro;
     background = Background(gameTime: this);
     earth = Earth(gameTime: this, speed: 0.1, segments: 10);
-    spaceship = Spaceship(gameTime: this, center: Offset(_size.width/2, _size.width/2), size: 10);
+    spaceship = Spaceship(
+        gameTime: this,
+        center: Offset(_size.width / 2, _size.width / 2),
+        size: 30);
   }
 
   @override
