@@ -110,85 +110,29 @@ class Spaceship {
 
   void _drawShipFuture(Canvas c) {}
 
-  static const double SPEED_INCREASE_FACTOR = .4;
   static const double SPEED_BOOST = 20;
-  static const double MAX_SPEED = 150;
+  static const double ROTATION_ANGLE = 10;
 
   void right() {
-    direction += _radians(10);
+    direction += _radians(ROTATION_ANGLE);
     if (direction > _radians(360)) {
       direction = direction - _radians(360);
     }
-//    if (speed.dx == 0) {
-//      speed = speed.translate(SPEED_BOOST, 0);
-//    } else if (speed.dx > 0) {
-//      speed = speed.scale(1 + SPEED_INCREASE_FACTOR, 1);
-//      if (speed.dx > MAX_SPEED) {
-//        speed = Offset(MAX_SPEED, speed.dy);
-//      }
-//    } else {
-//      if (speed.dx > -SPEED_BOOST) {
-//        speed = speed.translate(-speed.dx, 0);
-//      } else {
-//        speed = speed.scale(1 - SPEED_INCREASE_FACTOR, 1);
-//      }
-//    }
   }
 
   void left() {
-    direction += _radians(-10);
+    direction += _radians(-ROTATION_ANGLE);
     if (direction < 0) {
       direction = _radians(360) + direction;
     }
-//    if (speed.dx == 0) {
-//      speed = speed.translate(-SPEED_BOOST, 0);
-//    } else if (speed.dx < 0) {
-//      speed = speed.scale(1 + SPEED_INCREASE_FACTOR, 1);
-//      if (speed.dx < -MAX_SPEED) {
-//        speed = Offset(-MAX_SPEED, speed.dy);
-//      }
-//    } else {
-//      if (speed.dx < SPEED_BOOST) {
-//        speed = speed.translate(-speed.dx, 0);
-//      } else {
-//        speed = speed.scale(1 - SPEED_INCREASE_FACTOR, 1);
-//      }
-//    }
   }
 
   void down() {
-//    if (speed.dy == 0) {
-//      speed = speed.translate(0, SPEED_BOOST);
-//    } else if (speed.dy > 0) {
-//      speed = speed.scale(1, 1 + SPEED_INCREASE_FACTOR);
-//      if (speed.dy > MAX_SPEED) {
-//        speed = Offset(speed.dx, MAX_SPEED);
-//      }
-//    } else {
-//      if (speed.dy > -SPEED_BOOST) {
-//        speed = speed.translate(0, -speed.dy);
-//      } else {
-//        speed = speed.scale(1, 1 - SPEED_INCREASE_FACTOR);
-//      }
-//    }
+    speed = speed.translate(-math.cos(direction) * SPEED_BOOST, -math.sin(direction) * SPEED_BOOST);
   }
 
   void up() {
-    speed = speed.translate(math.cos(direction) * 10, math.sin(direction) * 10);
-//    if (speed.dy == 0) {
-//      speed = speed.translate(0, -SPEED_BOOST);
-//    } else if (speed.dy < 0) {
-//      speed = speed.scale(1, 1 + SPEED_INCREASE_FACTOR);
-//      if (speed.dy < -MAX_SPEED) {
-//        speed = Offset(speed.dx, -MAX_SPEED);
-//      }
-//    } else {
-//      if (speed.dy < SPEED_BOOST) {
-//        speed = speed.translate(0, -speed.dy);
-//      } else {
-//        speed = speed.scale(1, 1 - SPEED_INCREASE_FACTOR);
-//      }
-//    }
+    speed = speed.translate(math.cos(direction) * SPEED_BOOST, math.sin(direction) * SPEED_BOOST);
   }
 
   void _reset() {
