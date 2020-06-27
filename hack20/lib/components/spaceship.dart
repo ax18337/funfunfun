@@ -77,6 +77,11 @@ class Spaceship {
   }
 
   void update(double t) {
+    if (gameTime.earth.distance(_rect.center) > 0) {
+      var gravity = gameTime.earth.gravityStrenght(center);
+      speed = speed.translate(gravity.dx * t, gravity.dy * t);
+    }
+
     _rect = Rect.fromCenter(
       center: Offset(
           _rect.center.dx + speed.dx * t, _rect.center.dy + speed.dy * t),
