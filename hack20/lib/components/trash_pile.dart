@@ -34,6 +34,10 @@ class TrashPile {
   int pileCount;
   int recycledCount;
 
+  double get status {
+    return max(0, 1 - pollution / 500);
+  }
+
   void render(Canvas c) {
     for (var trash in _trash) {
       trash.render(c);
@@ -60,8 +64,8 @@ class TrashPile {
       _trash.removeAt(index);
     }
 
-    if (_trash.length < gameTime.level) {
-      if (_random.nextDouble() <= 0.01 * gameTime.level) {
+    if (_trash.length < gameTime.user.level) {
+      if (_random.nextDouble() <= 0.01 * gameTime.user.level) {
         _addTrash();
       }
     }

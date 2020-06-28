@@ -1,6 +1,7 @@
 import 'dart:math' as math;
 import 'dart:ui';
 import 'package:flutter/widgets.dart';
+import 'package:hack20/utils/geometry.dart';
 import 'package:hack20/utils/neon.dart';
 
 import '../game_time.dart';
@@ -148,14 +149,7 @@ class Spaceship {
   }
 
   Path _createPath() {
-    double width = _rect.width * 0.5;
-    Path path = Path();
-    path.moveTo(_rect.center.dx, _rect.top);
-    path.lineTo(_rect.center.dx + width / 2, _rect.bottom);
-    path.lineTo(_rect.center.dx, _rect.bottom - width * 0.4);
-    path.lineTo(_rect.center.dx - width / 2, _rect.bottom);
-    path.close();
-    return path;
+    return Geometry.spaceship(_rect);
   }
 
   static const double SPEED_BOOST = 350;
@@ -164,44 +158,18 @@ class Spaceship {
 
   void right(bool keyDown) {
     _directionAngle = keyDown ? ROTATION_ANGLE : 0;
-    // direction += _radians(ROTATION_ANGLE);
-    // if (direction > _radians(360)) {
-    //   direction = direction - _radians(360);
-    // }
   }
 
   void left(bool keyDown) {
     _directionAngle = keyDown ? -ROTATION_ANGLE : 0;
-    // direction += _radians(-ROTATION_ANGLE);
-    // if (direction < 0) {
-    //   direction = _radians(360) + direction;
-    // }
   }
 
   void down(bool keyDown) {
     _thrust = keyDown ? -SPEED_BOOST : 0;
-    // _thrust -= SPEED_BOOST;
-    // if (_thrust < -MAX_SPEED) {
-    //   _thrust = -MAX_SPEED;
-    // }
-
-    // speed = speed.translate(
-    //     -math.cos(direction) * SPEED_BOOST, -math.sin(direction) * SPEED_BOOST);
-    // if (speed.distance > MAX_SPEED) {
-    //   var norm = MAX_SPEED / speed.distance;
-    //   speed = speed.scale(norm, norm);
-    // }
   }
 
   void up(bool keyDown) {
     _thrust = keyDown ? SPEED_BOOST : 0;
-
-    // speed = speed.translate(
-    //     math.cos(direction) * SPEED_BOOST, math.sin(direction) * SPEED_BOOST);
-    // if (speed.distance > MAX_SPEED) {
-    //   var norm = MAX_SPEED / speed.distance;
-    //   speed = speed.scale(norm, norm);
-    // }
   }
 
   void _reset() {
