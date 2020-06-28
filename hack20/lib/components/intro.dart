@@ -4,6 +4,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:hack20/components/trash.dart';
+import 'package:hack20/utils/neon.dart';
 
 import '../game_time.dart';
 
@@ -82,15 +83,29 @@ class Intro {
     c.save();
     c.drawRect(_rect, _retroPaint);
     c.clipRect(_rect.inflate(-20));
+    _drawScoreboardText(c, WHITE, "Joystix");
+    c.restore();
+  }
 
+  void _drawScoreboardFuture(Canvas c) {
+    c.save();
+    Path path = Path();
+    path.addRect(_rect);
+    Neon.render(c, path, _futurePaint, 1);
+    c.clipRect(_rect.inflate(-20));
+    _drawScoreboardText(c, GREEN, "Library-3-am-soft");
+    c.restore();
+  }
+
+  void _drawScoreboardText(Canvas c, Color textColor, String fontFamily) {
     double progress = time / 20;
 
     if (progress > 1.5) {
       TextSpan span = TextSpan(
           style: TextStyle(
-            color: WHITE,
+            color: textColor,
             fontSize: 64.0,
-            fontFamily: 'Joystix',
+            fontFamily: fontFamily,
           ),
           text: "GRAVITY BITES BACK");
       TextPainter tp = TextPainter(
@@ -98,7 +113,8 @@ class Intro {
           textAlign: TextAlign.center,
           textDirection: TextDirection.ltr);
       tp.layout(maxWidth: _rect.width - 80);
-      tp.paint(c, Offset(_rect.left + 40, _rect.top + 40));
+      tp.paint(
+          c, Offset(_rect.center.dx - tp.size.width * 0.5, _rect.top + 40));
 
       double y = _rect.top + 40 + tp.size.height + 20;
 
@@ -106,9 +122,9 @@ class Intro {
       if (step % 2 == 0) {
         TextSpan span = TextSpan(
             style: TextStyle(
-              color: WHITE,
+              color: textColor,
               fontSize: 24.0,
-              fontFamily: 'Joystix',
+              fontFamily: fontFamily,
             ),
             text: "PRESS SPACE");
         TextPainter tp = TextPainter(
@@ -127,9 +143,9 @@ class Intro {
 
       TextSpan span = TextSpan(
           style: TextStyle(
-            color: WHITE,
+            color: textColor,
             fontSize: 24.0,
-            fontFamily: 'Joystix',
+            fontFamily: fontFamily,
           ),
           text: _text);
       TextPainter tp = TextPainter(
@@ -144,16 +160,13 @@ class Intro {
     c.restore();
   }
 
-  void _drawScoreboardFuture(Canvas c) {}
-
   String _text =
       """In the 22nd century the human kind became overrun by trash of their own making.
 There was no place on Earth to manage the vastness of greed induced and man produced garbage.
 The powers at be came to a brilliant idea,they thought, to launch the trash off of the planet and into outer space...
 but their calculations were wrong...
 and gravity has slowly been pulling the waste back to Earth causing catastrophic fiery re-entry showers burning the atmosphere.
-Now a team of brave space captains is putting their lives on the line to protect the Earth from these trash meteors.
-GRAVITY BITES BACK""";
+Now a team of brave space captains is putting their lives on the line to protect the Earth from these trash meteors.""";
 
   void _addTrash() {
     Rect rect = _rect.inflate(-40);

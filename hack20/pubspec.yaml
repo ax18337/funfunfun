@@ -80,3 +80,7 @@ flutter:
     - family: Joystix
       fonts:
         - asset: fonts/joystix-monospace.ttf
+    - family: Library-3-am-soft
+      fonts:
+        - asset: fonts/Library-3-am-soft.otf
+

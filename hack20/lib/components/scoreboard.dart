@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:hack20/utils/neon.dart';
 
 import '../game_time.dart';
 
@@ -83,21 +84,45 @@ class Scoreboard {
         });
         _data.sort((a, b) => b.score.compareTo(a.score));
       });
-      _drawRetroLoading(c);
+      _drawLoading(c, WHITE, "Joystix");
     } else {
-      _drawRetroLoaded(c);
+      _drawLoaded(c, WHITE, "Joystix");
     }
     c.restore();
   }
 
-  void _drawRetroLoading(Canvas c) {
-    _drawRetroHeader(c);
+  void _drawScoreboardFuture(Canvas c) {
+    c.save();
+    var translate =
+        Offset(gameTime.screenSize.width / 2, gameTime.screenSize.height / 2) -
+            _rect.center;
+    c.translate(translate.dx, translate.dy);
+    Path path = Path()..addRect(_rect);
+    Neon.render(c, path, _futurePaint, 1);
+
+    if (_data == null) {
+      Firestore.instance.collection("scores").snapshots().listen((data) {
+        _data = List<Entry>();
+        data.documents.forEach((element) {
+          _data.add(Entry(element['user'], element['score']));
+        });
+        _data.sort((a, b) => b.score.compareTo(a.score));
+      });
+      _drawLoading(c, GREEN, "Library-3-am-soft");
+    } else {
+      _drawLoaded(c, GREEN, "Library-3-am-soft");
+    }
+    c.restore();
+  }
+
+  void _drawLoading(Canvas c, Color textColor, String fontFamily) {
+    _drawHeader(c, textColor, fontFamily);
 
     TextSpan span = TextSpan(
         style: TextStyle(
-          color: WHITE,
+          color: textColor,
           fontSize: 24.0,
-          fontFamily: 'Joystix',
+          fontFamily: fontFamily,
         ),
         text: "LOADING ...");
     TextPainter tp = TextPainter(
@@ -113,11 +138,11 @@ class Scoreboard {
     );
     tp.paint(c, box.topLeft);
 
-    _drawRetroFooter(c);
+    _drawFooter(c, textColor, fontFamily);
   }
 
-  void _drawRetroLoaded(Canvas c) {
-    _drawRetroHeader(c);
+  void _drawLoaded(Canvas c, Color textColor, String fontFamily) {
+    _drawHeader(c, textColor, fontFamily);
 
     double y = 100;
 
@@ -159,9 +184,9 @@ class Scoreboard {
 
       TextSpan span = TextSpan(
           style: TextStyle(
-            color: WHITE,
+            color: textColor,
             fontSize: 24.0,
-            fontFamily: 'Joystix',
+            fontFamily: fontFamily,
           ),
           text: line);
       TextPainter tp = TextPainter(
@@ -179,16 +204,16 @@ class Scoreboard {
       y += 6 + tp.size.height;
     }
 
-    _drawRetroFooter(c);
+    _drawFooter(c, textColor, fontFamily);
   }
 
-  void _drawRetroHeader(Canvas c) {
+  void _drawHeader(Canvas c, Color textColor, String fontFamily) {
     double y = _rect.top + 20;
     TextSpan span = TextSpan(
         style: TextStyle(
-          color: WHITE,
+          color: textColor,
           fontSize: 32.0,
-          fontFamily: 'Joystix',
+          fontFamily: fontFamily,
         ),
         text: "HIGHSCORES");
     TextPainter tp = TextPainter(
@@ -208,9 +233,9 @@ class Scoreboard {
 
     span = TextSpan(
         style: TextStyle(
-          color: WHITE,
+          color: textColor,
           fontSize: 32.0,
-          fontFamily: 'Joystix',
+          fontFamily: fontFamily,
         ),
         text: "----------");
     tp = TextPainter(
@@ -227,12 +252,12 @@ class Scoreboard {
     tp.paint(c, box.topLeft);
   }
 
-  void _drawRetroFooter(Canvas c) {
+  void _drawFooter(Canvas c, Color textColor, String fontFamily) {
     TextSpan span = TextSpan(
         style: TextStyle(
-          color: WHITE,
+          color: textColor,
           fontSize: 18.0,
-          fontFamily: 'Joystix',
+          fontFamily: fontFamily,
         ),
         text: "Copyright 2020");
     TextPainter tp = TextPainter(
@@ -249,16 +274,14 @@ class Scoreboard {
     tp.paint(c, box.topLeft);
   }
 
-  void _drawScoreboardFuture(Canvas c) {}
-
   void latestScore(String username, int score) {
     debugPrint("updating score: $username = $score");
     if (score > 0) {
       _latestScore = Entry(username, score);
-      Firestore.instance.collection("scores").document().setData({
-        'user': username, 'score': score
-      });
+      Firestore.instance
+          .collection("scores")
+          .document()
+          .setData({'user': username, 'score': score});
     }
   }
 }
-
