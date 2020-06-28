@@ -59,4 +59,15 @@ class Geometry {
     path.addPolygon(points, true);
     return path;
   }
+
+  static Path spaceship(Rect rect) {
+    double width = rect.width * 0.5;
+    Path path = Path();
+    path.moveTo(rect.center.dx, rect.top);
+    path.lineTo(rect.center.dx + width / 2, rect.bottom);
+    path.lineTo(rect.center.dx, rect.bottom - width * 0.4);
+    path.lineTo(rect.center.dx - width / 2, rect.bottom);
+    path.close();
+    return path;
+  }
 }
