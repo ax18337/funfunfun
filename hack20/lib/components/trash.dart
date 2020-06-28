@@ -50,7 +50,6 @@ class Trash {
       ..strokeCap = StrokeCap.round
       ..strokeJoin = StrokeJoin.round
       ..strokeWidth = 3
-      // ..maskFilter = MaskFilter.blur(BlurStyle.normal, 50)
       ..isAntiAlias = true;
     _center = center;
     _path = _createPath();
