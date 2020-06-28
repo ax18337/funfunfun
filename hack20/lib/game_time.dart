@@ -35,6 +35,7 @@ class GameTime extends Game with KeyboardEvents {
 
   // level
   int level;
+  bool _gameEnded = false;
 
   Future<void> get initialize async {
     final _size = await Flame.util.initialDimensions();
@@ -73,19 +74,21 @@ class GameTime extends Game with KeyboardEvents {
   @override
   void render(Canvas c) {
 
-    scoreboard?.render(c);
+    if (_gameEnded) {
+      scoreboard?.render(c);
+    } else {
+      // components
+      background?.render(c);
+      earth?.render(c);
+      trashPile?.render(c);
+      spaceship?.render(c);
+      // efffects
+      interlace?.render(c);
 
-//    // components
-//    background?.render(c);
-//    earth?.render(c);
-//    trashPile?.render(c);
-//    spaceship?.render(c);
-//    // efffects
-//    interlace?.render(c);
-//
-//    if (trashPile != null) {
-//      _drawScrore(c);
-//    }
+      if (trashPile != null) {
+        _drawScore(c);
+      }
+    }
   }
 
   @override
@@ -97,6 +100,8 @@ class GameTime extends Game with KeyboardEvents {
     spaceship?.update(t);
     // efffects
     interlace?.update(t);
+
+    this._gameEnded = _isGameEnded();
   }
 
   @override
@@ -116,7 +121,7 @@ class GameTime extends Game with KeyboardEvents {
     }
   }
 
-  void _drawScrore(Canvas c) {
+  void _drawScore(Canvas c) {
     c.save();
 
     var builder = ParagraphBuilder(
@@ -129,5 +134,9 @@ class GameTime extends Game with KeyboardEvents {
     c.drawParagraph(paragraph, Offset(20, 20));
 
     c.restore();
+  }
+
+  bool _isGameEnded() {
+    return trashPile != null ? trashPile.pollution > 500 : false;
   }
 }
