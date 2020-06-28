@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:hack20/utils/geometry.dart';
+import 'package:hack20/utils/neon.dart';
 
 import '../game_time.dart';
 
@@ -156,9 +157,114 @@ class Status {
 
     _retroPaint.style = PaintingStyle.stroke;
     c.drawRect(Rect.fromLTRB(yStart + 2, 2, y - 2, 48), _retroPaint);
-
-    // c.drawRect(_rect, _retroPaint);
   }
 
-  void _drawFuture(Canvas c) {}
+  void _drawFuture(Canvas c) {
+    // 1st block - lives
+
+    double y = 10;
+
+    TextSpan span = TextSpan(
+        style: TextStyle(
+          color: GREEN,
+          fontSize: 24.0,
+          fontFamily: 'Library-3-am-soft',
+        ),
+        text: "SHIPS");
+    TextPainter tp = TextPainter(
+        text: span,
+        textAlign: TextAlign.left,
+        textDirection: TextDirection.ltr);
+    tp.layout();
+    tp.paint(c, Offset(y, (50 - tp.size.height) / 2));
+    y += 10 + tp.size.width;
+
+    for (var i = 0; i < 3; i++) {
+      Path path = Geometry.spaceship(Rect.fromLTWH(y, 10, 30, 30));
+      _futurePaint.style = PaintingStyle.stroke;
+      Neon.render(c, path, _futurePaint, 1);
+      if (gameTime.user.lives > i) {
+        _futurePaint.style = PaintingStyle.fill;
+        c.drawPath(path, _futurePaint);
+      }
+      y += 40;
+    }
+
+    _futurePaint.style = PaintingStyle.stroke;
+    Path path = Path()..addRect(Rect.fromLTRB(2, 2, y - 2, 48));
+    Neon.render(c, path, _futurePaint, 1);
+
+    // 2nd block - earth
+
+    double yStart = y;
+
+    y += 10;
+
+    span = TextSpan(
+        style: TextStyle(
+          color: GREEN,
+          fontSize: 24.0,
+          fontFamily: 'Library-3-am-soft',
+        ),
+        text: "EARTH");
+    tp = TextPainter(
+        text: span,
+        textAlign: TextAlign.left,
+        textDirection: TextDirection.ltr);
+    tp.layout();
+    tp.paint(c, Offset(y, (50 - tp.size.height) / 2));
+    y += 10 + tp.size.width;
+
+    _futurePaint.style = PaintingStyle.stroke;
+    path = Path()..addRect(Rect.fromLTWH(y, 10, 150, 30));
+    Neon.render(c, path, _futurePaint, 1);
+    _futurePaint.style = PaintingStyle.fill;
+    c.drawRect(Rect.fromLTWH(y, 10, 150 * gameTime.trashPile.status, 30),
+        _futurePaint);
+    y += 160;
+
+    _futurePaint.style = PaintingStyle.stroke;
+    path = Path()..addRect(Rect.fromLTRB(yStart + 2, 2, y - 2, 48));
+    Neon.render(c, path, _futurePaint, 1);
+
+    // 3rd block - score
+
+    yStart = y;
+
+    y += 10;
+
+    span = TextSpan(
+        style: TextStyle(
+          color: GREEN,
+          fontSize: 24.0,
+          fontFamily: 'Library-3-am-soft',
+        ),
+        text: "SCORE");
+    tp = TextPainter(
+        text: span,
+        textAlign: TextAlign.left,
+        textDirection: TextDirection.ltr);
+    tp.layout();
+    tp.paint(c, Offset(y, (50 - tp.size.height) / 2));
+    y += 10 + tp.size.width;
+
+    span = TextSpan(
+        style: TextStyle(
+          color: GREEN,
+          fontSize: 24.0,
+          fontFamily: 'Library-3-am-soft',
+        ),
+        text: "${gameTime.trashPile.score}");
+    tp = TextPainter(
+        text: span,
+        textAlign: TextAlign.left,
+        textDirection: TextDirection.ltr);
+    tp.layout();
+    tp.paint(c, Offset(y, (50 - tp.size.height) / 2));
+    y += 10 + 100;
+
+    _futurePaint.style = PaintingStyle.stroke;
+    path = Path()..addRect(Rect.fromLTRB(yStart + 2, 2, y - 2, 48));
+    Neon.render(c, path, _futurePaint, 1);
+  }
 }

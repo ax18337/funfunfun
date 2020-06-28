@@ -7,7 +7,7 @@ import 'package:hack20/utils/neon.dart';
 import '../game_time.dart';
 
 const WHITE = Color(0xffffffff);
-const PURPLE = Color(0xff7d12ff);
+const PURPLE = Color(0xff7df00fe);
 
 const BLACK = Color(0xff000000);
 
@@ -109,6 +109,13 @@ class Spaceship {
   }
 
   void _drawShip(Canvas c) {
+    if (_killed > 0) {
+      if ((_killed * 4).floor() % 2 == 0) {
+        c.drawColor(WHITE, BlendMode.color);
+        return;
+      }
+    }
+
     switch (gameTime.mode) {
       case Mode.retro:
         _drawShipRetro(c);
@@ -124,13 +131,6 @@ class Spaceship {
   }
 
   void _drawShipRetro(Canvas c) {
-    if (_killed > 0) {
-      if ((_killed * 4).floor() % 2 == 0) {
-        c.drawColor(WHITE, BlendMode.color);
-        return;
-      }
-    }
-
     c.save();
 
     var translate = _rect.center - _center;

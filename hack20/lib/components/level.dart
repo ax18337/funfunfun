@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
+import '../utils/neon.dart';
 import '../game_time.dart';
 
 const WHITE = Color(0xffffffff);
@@ -88,5 +89,34 @@ class Level {
     tp.paint(c, box.topLeft);
   }
 
-  void _drawFuture(Canvas c) {}
+  void _drawFuture(Canvas c) {
+    TextSpan span = TextSpan(
+        style: TextStyle(
+          color: WHITE,
+          fontSize: 24.0,
+          fontFamily: 'Library-3-am-soft',
+        ),
+        text: "LEVEL ${gameTime.user.level}");
+    TextPainter tp = TextPainter(
+        text: span,
+        textAlign: TextAlign.left,
+        textDirection: TextDirection.ltr);
+    tp.layout();
+    Rect box = Rect.fromLTWH(
+      _rect.center.dx - tp.size.width * 0.5,
+      _rect.center.dy - tp.size.height * 0.5,
+      tp.size.width,
+      tp.size.height,
+    );
+
+    c.drawRect(box.inflate(4), _backPaint);
+    Path path = Path()..addRect(box.inflate(4));
+    Neon.render(c, path, _futurePaint, 1);
+
+    c.drawRect(box.inflate(4), _backPaint);
+    _retroPaint.style = PaintingStyle.stroke;
+    c.drawRect(box.inflate(4), _retroPaint);
+
+    tp.paint(c, box.topLeft);
+  }
 }

@@ -93,7 +93,8 @@ class GameTime extends Game with KeyboardEvents {
     scoreboard = Scoreboard(gameTime: this);
 
     user = User(
-        deathCallback: () => scoreboard?.latestScore(user.name, trashPile.score));
+        deathCallback: () =>
+            scoreboard?.latestScore(user.name, trashPile.score));
 
     // effects
     interlace = Interlace(gameTime: this, size: 2);
@@ -114,6 +115,7 @@ class GameTime extends Game with KeyboardEvents {
 
   @override
   void render(Canvas c) {
+    background?.render(c);
 
     if (_nameDialog != null) {
       _nameDialog.render(c);
@@ -126,7 +128,6 @@ class GameTime extends Game with KeyboardEvents {
       scoreboard?.render(c);
     } else {
       // components
-      background?.render(c);
       earth?.render(c);
       moon?.render(c);
       trashPile?.render(c);
@@ -143,6 +144,8 @@ class GameTime extends Game with KeyboardEvents {
 
   @override
   void update(double t) {
+    background?.update(t);
+
     // intro
     if (_showIntro) {
       intro?.update(t);
@@ -150,7 +153,6 @@ class GameTime extends Game with KeyboardEvents {
 
     // components
     if (_gameRunning()) {
-      background?.update(t);
       earth?.update(t);
       moon?.update(t);
       trashPile?.update(t);
@@ -172,14 +174,14 @@ class GameTime extends Game with KeyboardEvents {
 
   @override
   void onKeyEvent(RawKeyEvent event) {
-
     if (_nameDialog != null) {
       if (event is RawKeyUpEvent) {
         if (event.data.keyLabel == 'Enter' || event.data.keyLabel == 'Escape') {
           _nameDialog = null;
         } else if (event.data.keyLabel == 'Backspace') {
           user.name = user.name.substring(0, user.name.length - 1);
-        } else if (user.name.length < MAX_NAME_SIZE && _isNameChar(event.data.keyLabel)) {
+        } else if (user.name.length < MAX_NAME_SIZE &&
+            _isNameChar(event.data.keyLabel)) {
           user.name += event.data.keyLabel;
         }
       }
@@ -205,6 +207,14 @@ class GameTime extends Game with KeyboardEvents {
       if (!keyDown && _showIntro) {
         _showIntro = false;
         startGame();
+      }
+    } else if (event.data.keyLabel == "f") {
+      if (keyDown) {
+        mode = Mode.future;
+      }
+    } else if (event.data.keyLabel == "r") {
+      if (keyDown) {
+        mode = Mode.retro;
       }
     }
   }
@@ -237,7 +247,6 @@ class GameTime extends Game with KeyboardEvents {
     user.reset();
     trashPile.reset();
     spaceship.reset();
-    _updateName();
   }
 
   void _updateName() {
