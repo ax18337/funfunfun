@@ -1,3 +1,5 @@
+import 'package:flutter/cupertino.dart';
+
 class User {
   String name = "anon";
   int _lives = 3;
@@ -9,6 +11,7 @@ class User {
 
   void lostLife() {
     _lives -= 1;
+    debugPrint("lost a life $_lives");
     if (_lives == 0) {
       deathCallback();
     }

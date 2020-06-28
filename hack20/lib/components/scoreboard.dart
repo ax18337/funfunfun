@@ -252,10 +252,13 @@ class Scoreboard {
   void _drawScoreboardFuture(Canvas c) {}
 
   void latestScore(String username, int score) {
-    _latestScore = Entry(username, score);
-    Firestore.instance.collection("scores").document().setData({
-      'user': username, 'score': score
-    });
+    debugPrint("updating score: $username = $score");
+    if (score > 0) {
+      _latestScore = Entry(username, score);
+      Firestore.instance.collection("scores").document().setData({
+        'user': username, 'score': score
+      });
+    }
   }
 }
 

@@ -102,7 +102,7 @@ class Spaceship {
     if (!gameTime.isInside(_rect.center) ||
         gameTime.earth.distance(_rect.center) <= 0 ||
         gameTime.moon.distance(_rect.center) <= 0) {
-      gameTime.user.lostLife();
+      gameTime.userLostLife();
       reset();
       _killed = 2;
     }

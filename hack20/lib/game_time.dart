@@ -57,6 +57,8 @@ class GameTime extends Game with KeyboardEvents {
   double _increasedLevelTicks = 5;
   User user;
 
+  static const int MAX_NAME_SIZE = 10;
+
   Future<void> get initialize async {
     final _size = await Flame.util.initialDimensions();
     resize(_size);
@@ -91,12 +93,10 @@ class GameTime extends Game with KeyboardEvents {
     scoreboard = Scoreboard(gameTime: this);
 
     user = User(
-        deathCallback: () => scoreboard?.latestScore("anon", trashPile.score));
+        deathCallback: () => scoreboard?.latestScore(user.name, trashPile.score));
 
     // effects
     interlace = Interlace(gameTime: this, size: 2);
-
-    startGame();
   }
 
   @override
@@ -149,18 +149,20 @@ class GameTime extends Game with KeyboardEvents {
     }
 
     // components
-    background?.update(t);
-    if (_isGameEnded() || _increasedLevelTicks <= 0) {
-      earth?.update(t);
-      moon?.update(t);
-      trashPile?.update(t);
-      spaceship?.update(t);
-    }
-    status?.update(t);
-    level?.update(t);
+    if (_gameRunning()) {
+      background?.update(t);
+      if (_isGameEnded() || _increasedLevelTicks <= 0) {
+        earth?.update(t);
+        moon?.update(t);
+        trashPile?.update(t);
+        spaceship?.update(t);
+      }
+      status?.update(t);
+      level?.update(t);
 
-    // efffects
-    interlace?.update(t);
+      // efffects
+      interlace?.update(t);
+    }
 
     if (!_isGameEnded()) {
       _checkLevelCompleted();
@@ -173,17 +175,13 @@ class GameTime extends Game with KeyboardEvents {
   @override
   void onKeyEvent(RawKeyEvent event) {
 
-    if (event is RawKeyUpEvent) {
-      debugPrint("key = ${event.data.keyLabel}");
-    }
-
     if (_nameDialog != null) {
       if (event is RawKeyUpEvent) {
         if (event.data.keyLabel == 'Enter' || event.data.keyLabel == 'Escape') {
           _nameDialog = null;
         } else if (event.data.keyLabel == 'Backspace') {
           user.name = user.name.substring(0, user.name.length - 1);
-        } else if (_isNameChar(event.data.keyLabel)) {
+        } else if (user.name.length < MAX_NAME_SIZE && _isNameChar(event.data.keyLabel)) {
           user.name += event.data.keyLabel;
         }
       }
@@ -214,8 +212,8 @@ class GameTime extends Game with KeyboardEvents {
   }
 
   bool _isGameEnded() {
-    if (trashPile != null && user != null) {
-      if (trashPile.status <= 0 || user.lives <= 0) {
+    if (user != null) {
+      if (user.lives <= 0) {
         return true;
       }
     }
@@ -250,4 +248,14 @@ class GameTime extends Game with KeyboardEvents {
 
   // perhaps filter for ASCII? or readable?
   bool _isNameChar(String keyLabel) => keyLabel.length == 1;
+
+  bool _gameRunning() =>
+      !_isGameEnded() &&
+      _increasedLevelTicks <= 0 &&
+      !_showIntro &&
+      _nameDialog == null;
+
+  void userLostLife() {
+    user.lostLife();
+  }
 }

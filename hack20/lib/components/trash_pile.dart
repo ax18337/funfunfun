@@ -60,6 +60,11 @@ class TrashPile {
         recycledCount += 1;
       }
     });
+
+    if (status <= 0) {
+      gameTime.userLostLife();
+    }
+
     for (var index in outOfScreen) {
       _trash.removeAt(index);
     }
