@@ -1,17 +1,21 @@
+import 'dart:developer';
 import 'dart:ui';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flame/flame.dart';
 import 'package:flame/game.dart';
 import 'package:flame/keyboard.dart';
+import 'package:flutter/animation.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/src/services/raw_keyboard.dart';
 import 'package:hack20/components/interlace.dart';
 import 'package:hack20/components/moon.dart';
 import 'package:hack20/components/scoreboard.dart';
 import 'package:hack20/components/trash_pile.dart';
+
 import 'components/background.dart';
 import 'components/earth.dart';
 import 'components/spaceship.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'dart:developer';
 
 enum Mode { retro, future }
 
@@ -39,6 +43,7 @@ class GameTime extends Game with KeyboardEvents {
   // level
   int level;
   bool _gameEnded = false;
+  double _increasedLevelTicks = 0;
 
   Future<void> get initialize async {
     final _size = await Flame.util.initialDimensions();
@@ -85,6 +90,9 @@ class GameTime extends Game with KeyboardEvents {
     if (_gameEnded) {
       scoreboard?.render(c);
     } else {
+      if (_increasedLevelTicks > 0) {
+        _renderLevelUpdated(c);
+      }
       // components
       background?.render(c);
       earth?.render(c);
@@ -114,6 +122,12 @@ class GameTime extends Game with KeyboardEvents {
     interlace?.update(t);
 
     this._gameEnded = _isGameEnded();
+    if (!_gameEnded) {
+      _checkLevelCompleted();
+    }
+    if (_increasedLevelTicks > 0) {
+      _increasedLevelTicks -= t;
+    }
   }
 
   @override
@@ -152,5 +166,26 @@ class GameTime extends Game with KeyboardEvents {
 
   bool _isGameEnded() {
     return trashPile != null ? trashPile.pollution > 500 : false;
+  }
+
+  void _checkLevelCompleted() {
+    if (trashPile != null ? trashPile.score > level * 10 : false) {
+      debugPrint("increasing level: ${trashPile?.score}");
+      _increasedLevelTicks = 2000;
+      level += 1;
+    }
+  }
+
+  void _renderLevelUpdated(Canvas c) {
+    c.save();
+
+    debugPrint("we try");
+
+    var builder = ParagraphBuilder(
+        ParagraphStyle(textAlign: TextAlign.left, fontSize: 48, maxLines: 1))
+      ..addText("Now @Level $level");
+    var paragraph = builder.build()..layout(ParagraphConstraints(width: 500));
+    c.drawParagraph(paragraph, Offset(20, 80));
+    c.restore();
   }
 }

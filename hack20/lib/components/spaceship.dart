@@ -79,6 +79,7 @@ class Spaceship {
         gameTime.moon.distance(_rect.center) > 0) {
       gravity = gameTime.earth.gravityStrenght(_rect.center) +
           gameTime.moon.gravityStrenght(_rect.center);
+      gravity *= .8;
     }
     Offset thrust = Offset.fromDirection(direction, _thrust);
     Offset force = gravity + thrust;
