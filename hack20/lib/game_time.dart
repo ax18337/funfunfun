@@ -9,6 +9,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/src/services/raw_keyboard.dart';
 
 import 'package:hack20/components/interlace.dart';
+import 'package:hack20/components/intro.dart';
 import 'package:hack20/components/moon.dart';
 import 'package:hack20/components/scoreboard.dart';
 import 'package:hack20/components/status.dart';
@@ -29,6 +30,10 @@ class GameTime extends Game with KeyboardEvents {
 
   Size screenSize;
   Mode mode;
+
+  // intro
+  Intro intro;
+  bool _showIntro = true;
 
   // components
   Background background;
@@ -54,6 +59,9 @@ class GameTime extends Game with KeyboardEvents {
     resize(_size);
 
     mode = Mode.retro;
+
+    // intro
+    intro = Intro(gameTime: this);
 
     // components
     background = Background(gameTime: this);
@@ -100,7 +108,9 @@ class GameTime extends Game with KeyboardEvents {
 
   @override
   void render(Canvas c) {
-    if (_isGameEnded()) {
+    if (_showIntro) {
+      intro?.render(c);
+    } else if (_isGameEnded()) {
       scoreboard?.render(c);
     } else {
       // components
@@ -121,6 +131,11 @@ class GameTime extends Game with KeyboardEvents {
 
   @override
   void update(double t) {
+    // intro
+    if (_showIntro) {
+      intro?.update(t);
+    }
+
     // components
     background?.update(t);
     if (_isGameEnded() || _increasedLevelTicks <= 0) {
