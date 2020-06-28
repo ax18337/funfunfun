@@ -7,6 +7,7 @@ import 'package:flame/keyboard.dart';
 import 'package:flutter/cupertino.dart';
 // ignore: implementation_imports
 import 'package:flutter/src/services/raw_keyboard.dart';
+import 'package:hack20/components/input-box.dart';
 
 import 'package:hack20/components/interlace.dart';
 import 'package:hack20/components/moon.dart';
@@ -26,6 +27,8 @@ class GameTime extends Game with KeyboardEvents {
   GameTime() {
     initialize;
   }
+
+  InputBox _nameDialog; // when updating name
 
   Size screenSize;
   Mode mode;
@@ -83,6 +86,8 @@ class GameTime extends Game with KeyboardEvents {
 
     // effects
     interlace = Interlace(gameTime: this, size: 2);
+
+    startGame();
   }
 
   @override
@@ -100,6 +105,12 @@ class GameTime extends Game with KeyboardEvents {
 
   @override
   void render(Canvas c) {
+
+    if (_nameDialog != null) {
+      _nameDialog.render(c);
+      return; // modal
+    }
+
     if (_isGameEnded()) {
       scoreboard?.render(c);
     } else {
@@ -145,6 +156,24 @@ class GameTime extends Game with KeyboardEvents {
 
   @override
   void onKeyEvent(RawKeyEvent event) {
+
+    if (event is RawKeyUpEvent) {
+      debugPrint("key = ${event.data.keyLabel}");
+    }
+
+    if (_nameDialog != null) {
+      if (event is RawKeyUpEvent) {
+        if (event.data.keyLabel == 'Enter' || event.data.keyLabel == 'Escape') {
+          _nameDialog = null;
+        } else if (event.data.keyLabel == 'Backspace') {
+          user.name = user.name.substring(0, user.name.length - 1);
+        } else if (_isNameChar(event.data.keyLabel)) {
+          user.name += event.data.keyLabel;
+        }
+      }
+      return;
+    }
+
     bool keyDown = true;
     if (event is RawKeyUpEvent) {
       keyDown = false;
@@ -191,5 +220,13 @@ class GameTime extends Game with KeyboardEvents {
     user.reset();
     trashPile.reset();
     spaceship.reset();
+    _updateName();
   }
+
+  void _updateName() {
+    _nameDialog = new InputBox(gameTime: this);
+  }
+
+  // perhaps filter for ASCII? or readable?
+  bool _isNameChar(String keyLabel) => keyLabel.length == 1;
 }

@@ -1,4 +1,5 @@
 class User {
+  String name = "anon";
   int _lives = 3;
   int _level = 1;
 
