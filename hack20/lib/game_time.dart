@@ -90,7 +90,8 @@ class GameTime extends Game with KeyboardEvents {
 
     scoreboard = Scoreboard(gameTime: this);
 
-    user = User(deathCallback: () => scoreboard?.latestScore("anon", trashPile.score));
+    user = User(
+        deathCallback: () => scoreboard?.latestScore("anon", trashPile.score));
 
     // effects
     interlace = Interlace(gameTime: this, size: 2);
@@ -204,6 +205,11 @@ class GameTime extends Game with KeyboardEvents {
       spaceship.up(keyDown);
     } else if (event.data.keyLabel == "s") {
       spaceship.down(keyDown);
+    } else if (event.data.keyLabel == " ") {
+      if (keyDown && _showIntro) {
+        _showIntro = false;
+        startGame();
+      }
     }
   }
 
