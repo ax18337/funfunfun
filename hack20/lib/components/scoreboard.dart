@@ -93,7 +93,7 @@ class Scoreboard {
       });
       _drawLoading(c, WHITE, "Joystix");
     } else {
-      _drawLoaded(c, WHITE, "Joystix");
+      _drawLoaded(c, WHITE, GREEN, "Joystix");
     }
     c.restore();
   }
@@ -117,7 +117,7 @@ class Scoreboard {
       });
       _drawLoading(c, GREEN, "Library-3-am-soft");
     } else {
-      _drawLoaded(c, GREEN, "Library-3-am-soft");
+      _drawLoaded(c, GREEN, WHITE, "Library-3-am-soft");
     }
     c.restore();
   }
@@ -148,7 +148,7 @@ class Scoreboard {
     _drawFooter(c, textColor, fontFamily);
   }
 
-  void _drawLoaded(Canvas c, Color textColor, String fontFamily) {
+  void _drawLoaded(Canvas c, Color textColor, Color hightlightColor, String fontFamily) {
     _drawHeader(c, textColor, fontFamily);
 
     double y = 100;
@@ -193,7 +193,7 @@ class Scoreboard {
 
       TextSpan span = TextSpan(
           style: TextStyle(
-            color: highlight ? GREEN : textColor,
+            color: highlight ? hightlightColor : textColor,
             fontSize: 24.0,
             fontFamily: fontFamily,
           ),
