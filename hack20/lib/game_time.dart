@@ -44,7 +44,6 @@ class GameTime extends Game with KeyboardEvents {
   Interlace interlace;
 
   // level
-  int level;
   bool _gameEnded = false;
   double _increasedLevelTicks = 0;
   User user = User();
@@ -180,10 +179,10 @@ class GameTime extends Game with KeyboardEvents {
   }
 
   void _checkLevelCompleted() {
-    if (trashPile != null ? trashPile.score > level * 10 : false) {
+    if (trashPile != null ? trashPile.score > user.level * 10 : false) {
       debugPrint("increasing level: ${trashPile?.score}");
       _increasedLevelTicks = 2000;
-      level += 1;
+      user.nextLevel();
     }
   }
 
@@ -194,7 +193,7 @@ class GameTime extends Game with KeyboardEvents {
 
     var builder = ParagraphBuilder(
         ParagraphStyle(textAlign: TextAlign.left, fontSize: 48, maxLines: 1))
-      ..addText("Now @Level $level");
+      ..addText("Now @Level ${user.level}");
     var paragraph = builder.build()..layout(ParagraphConstraints(width: 500));
     c.drawParagraph(paragraph, Offset(20, 80));
     c.restore();
