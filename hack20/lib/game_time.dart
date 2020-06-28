@@ -4,10 +4,12 @@ import 'package:flame/game.dart';
 import 'package:flame/keyboard.dart';
 import 'package:flutter/src/services/raw_keyboard.dart';
 import 'package:hack20/components/interlace.dart';
+import 'package:hack20/components/scoreboard.dart';
 import 'package:hack20/components/trash_pile.dart';
 import 'components/background.dart';
 import 'components/earth.dart';
 import 'components/spaceship.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 enum Mode { retro, future }
 
@@ -24,6 +26,9 @@ class GameTime extends Game with KeyboardEvents {
   Earth earth;
   Spaceship spaceship;
   TrashPile trashPile;
+
+  // scoreboard
+  Scoreboard scoreboard;
 
   // effects
   Interlace interlace;
@@ -51,6 +56,8 @@ class GameTime extends Game with KeyboardEvents {
         size: 30);
     trashPile = TrashPile(gameTime: this);
 
+    scoreboard = Scoreboard(gameTime: this);
+
     // effects
     interlace = Interlace(gameTime: this, size: 2);
 
@@ -65,17 +72,20 @@ class GameTime extends Game with KeyboardEvents {
 
   @override
   void render(Canvas c) {
-    // components
-    background?.render(c);
-    earth?.render(c);
-    trashPile?.render(c);
-    spaceship?.render(c);
-    // efffects
-    interlace?.render(c);
 
-    if (trashPile != null) {
-      _drawScrore(c);
-    }
+    scoreboard?.render(c);
+
+//    // components
+//    background?.render(c);
+//    earth?.render(c);
+//    trashPile?.render(c);
+//    spaceship?.render(c);
+//    // efffects
+//    interlace?.render(c);
+//
+//    if (trashPile != null) {
+//      _drawScrore(c);
+//    }
   }
 
   @override

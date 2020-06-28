@@ -1,4 +1,7 @@
 import 'dart:ui';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
 import '../game_time.dart';
@@ -11,8 +14,8 @@ class Scoreboard {
     _rect = Rect.fromLTWH(
       0,
       0,
-      gameTime.screenSize.width,
-      gameTime.screenSize.height,
+      gameTime.screenSize.width - 200,
+      gameTime.screenSize.height - 100,
     );
     _retroPaint = Paint()
       ..style = PaintingStyle.stroke
@@ -28,14 +31,13 @@ class Scoreboard {
       ..strokeJoin = StrokeJoin.round
       ..strokeWidth = 3
       ..isAntiAlias = false;
-    speed = Offset.zero;
   }
 
   final GameTime gameTime;
   Rect _rect;
   Paint _retroPaint;
   Paint _futurePaint;
-  Offset speed;
+  Map<String, int> _data;
 
   Offset get center {
     return _rect.center;
@@ -60,24 +62,39 @@ class Scoreboard {
 
   void _drawScoreboardRetro(Canvas c) {
     c.save();
+    var translate =
+        Offset(gameTime.screenSize.width / 2, gameTime.screenSize.height / 2) -
+            _rect.center;
+    c.translate(translate.dx, translate.dy);
+    c.drawRect(_rect, _retroPaint);
 
-    double width = _rect.width * 0.4;
-    Path path = Path();
-    path.moveTo(_rect.center.dx, _rect.top);
-    path.lineTo(_rect.center.dx + width / 2, _rect.bottom);
-    path.lineTo(_rect.center.dx, _rect.bottom - width * 0.5);
-    path.lineTo(_rect.center.dx - width / 2, _rect.bottom);
-    path.close();
-    c.drawPath(path, _retroPaint);
+    if (_data == null) {
+      Firestore.instance.collection("scores").snapshots().listen((data) {
+        _data = Map<String, int>();
+        data.documents.forEach((element) {
+          debugPrint("user = ${element['user']} score = ${element['score']}");
+          _data[element['user']] = element['score'];
+        });
+      });
+      var builder = ParagraphBuilder(ParagraphStyle(
+          textAlign: TextAlign.center, fontSize: 40, maxLines: 1))
+        ..addText("Loading high scores...");
 
+      var paragraph = builder.build()..layout(ParagraphConstraints(width: 500));
+      c.drawParagraph(paragraph, Offset(20, 20));
+    } else {
+      double space = 20;
+      _data.forEach((key, value) {
+        var builder = ParagraphBuilder(ParagraphStyle(
+            textAlign: TextAlign.center, fontSize: 24, maxLines: 1))
+          ..addText("$key --- $value");
+
+        var paragraph = builder.build()..layout(ParagraphConstraints(width: 500));
+        c.drawParagraph(paragraph, Offset(20, space));
+        space += 40;
+      });
+    }
     c.restore();
-
-    var builder = ParagraphBuilder(
-        ParagraphStyle(textAlign: TextAlign.center, fontSize: 24, maxLines: 1))
-      ..addText("speed x = ${speed.dx} y = ${speed.dy}");
-
-    var paragraph = builder.build()..layout(ParagraphConstraints(width: 200));
-    c.drawParagraph(paragraph, Offset(20, 20));
   }
 
   void _drawScoreboardFuture(Canvas c) {}

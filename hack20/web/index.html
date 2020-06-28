@@ -18,6 +18,25 @@
   <link rel="manifest" href="manifest.json">
 </head>
 <body>
+  <script src="https://www.gstatic.com/firebasejs/7.15.5/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/7.15.5/firebase-analytics.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/7.15.5/firebase-firestore.js"></script>
+  <script>
+      // Your web app's Firebase configuration
+      var firebaseConfig = {
+        apiKey: "AIzaSyBFX_Gbl1VY9YM3Wb9WS8onpkl-DW8NvDI",
+        authDomain: "hack20-cdb64.firebaseapp.com",
+        databaseURL: "https://hack20-cdb64.firebaseio.com",
+        projectId: "hack20-cdb64",
+        storageBucket: "hack20-cdb64.appspot.com",
+        messagingSenderId: "230260289538",
+        appId: "1:230260289538:web:77c8a5171968bf9ce8b71b",
+        measurementId: "G-1FTY60KX25"
+      };
+      // Initialize Firebase
+      firebase.initializeApp(firebaseConfig);
+      firebase.analytics();
+  </script>
   <!-- This script installs service_worker.js to provide PWA functionality to
        application. For more information, see:
        https://developers.google.com/web/fundamentals/primers/service-workers -->
