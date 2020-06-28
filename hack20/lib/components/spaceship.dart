@@ -194,6 +194,7 @@ class Spaceship {
       height: _rect.height,
     );
     speed = Offset.zero;
+    _killed = 0;
   }
 
   double distance(Offset point) {
