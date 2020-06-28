@@ -189,5 +189,7 @@ class GameTime extends Game with KeyboardEvents {
   void startGame() {
     _increasedLevelTicks = 5;
     user.reset();
+    trashPile.reset();
+    spaceship.reset();
   }
 }
