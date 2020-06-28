@@ -1,6 +1,7 @@
 import 'dart:math';
 import 'dart:ui';
 import 'package:flutter/widgets.dart';
+import 'package:hack20/utils/geometry.dart';
 import 'package:hack20/utils/neon.dart';
 import 'dart:developer' as dev;
 
@@ -89,7 +90,8 @@ class Trash {
   }
 
   void update(double t) {
-    var gravity = gameTime.earth.gravityStrenght(center);
+    var gravity = gameTime.earth.gravityStrenght(center) +
+        gameTime.moon.gravityStrenght(center);
 
     _rect = Rect.fromCenter(
       center: Offset(
@@ -125,32 +127,6 @@ class Trash {
   }
 
   Path _createPath() {
-    Random random = Random();
-
-    // 1. background
-    double radius = _rect.width * 0.5;
-
-    List<Offset> leftPoints = List<Offset>();
-    List<Offset> rightPoints = List<Offset>();
-
-    double angle = 0;
-    double angleSegment = pi / segments;
-    for (var i = 0; i <= segments; i++) {
-      double randomRadius = radius * (0.3 + 0.7 * random.nextDouble());
-      double dx = sin(angle) * randomRadius;
-      double dy = -cos(angle) * randomRadius;
-      if (dx > 0) {
-        leftPoints.add(Offset(_center.dx - dx, _center.dy + dy));
-        rightPoints.add(Offset(_center.dx + dx, _center.dy + dy));
-      } else {
-        leftPoints.add(Offset(_center.dx, _center.dy + dy));
-      }
-      angle += angleSegment;
-    }
-    List<Offset> points = leftPoints + rightPoints.reversed.toList();
-
-    Path path = Path();
-    path.addPolygon(points, true);
-    return path;
+    return Geometry.randomPolygon(_rect, segments);
   }
 }

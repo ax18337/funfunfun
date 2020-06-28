@@ -3,6 +3,8 @@ import 'package:flutter/widgets.dart';
 
 const WHITE = Color(0xffffffff);
 
+const double step = 1.5;
+
 class Neon {
   static Paint _glowPaint = Paint();
   static render(Canvas c, Path path, Paint paint, double scale) {
@@ -39,14 +41,14 @@ class Neon {
   }
 
   static _renderStroke(Canvas c, Path path, Paint paint, double scale) {
-    c.drawPath(
-        path, _strokePaint(paint.color, 0.1, (paint.strokeWidth + 6) / scale));
     c.drawPath(path,
-        _strokePaint(paint.color, 0.2, (paint.strokeWidth + 4.5) / scale));
-    c.drawPath(
-        path, _strokePaint(paint.color, 0.3, (paint.strokeWidth + 3) / scale));
+        _strokePaint(paint.color, 0.1, (paint.strokeWidth + 4 * step) / scale));
     c.drawPath(path,
-        _strokePaint(paint.color, 0.35, (paint.strokeWidth + 1.5) / scale));
+        _strokePaint(paint.color, 0.2, (paint.strokeWidth + 3 * step) / scale));
+    c.drawPath(path,
+        _strokePaint(paint.color, 0.3, (paint.strokeWidth + 2 * step) / scale));
+    c.drawPath(path,
+        _strokePaint(paint.color, 0.35, (paint.strokeWidth + step) / scale));
 
     c.drawPath(path, _strokePaint(paint.color, 1, paint.strokeWidth / scale));
 

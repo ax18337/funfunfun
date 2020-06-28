@@ -11,6 +11,7 @@ import 'components/background.dart';
 import 'components/earth.dart';
 import 'components/spaceship.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'dart:developer';
 
 enum Mode { retro, future }
 
@@ -51,13 +52,13 @@ class GameTime extends Game with KeyboardEvents {
       gameTime: this,
       speed: 0.1,
       segments: 10,
-      gravity: 9.81 * 50,
+      gravity: 9.81 * 30,
     );
     moon = Moon(
       gameTime: this,
-      speed: 1,
+      speed: 0.1,
       segments: 8,
-      gravity: 0,
+      gravity: 9.81 * 10,
     );
     spaceship = Spaceship(
         gameTime: this,
@@ -117,18 +118,22 @@ class GameTime extends Game with KeyboardEvents {
 
   @override
   void onKeyEvent(RawKeyEvent event) {
-    if (!(event is RawKeyDownEvent)) {
+    bool keyDown = true;
+    if (event is RawKeyUpEvent) {
+      keyDown = false;
+    } else if (!(event is RawKeyDownEvent)) {
       return;
     }
 
     if (event.data.keyLabel == "a") {
-      spaceship.left();
+      spaceship.left(keyDown);
     } else if (event.data.keyLabel == "d") {
-      spaceship.right();
+      spaceship.right(keyDown);
     } else if (event.data.keyLabel == "w") {
-      spaceship.up();
+      spaceship.up(keyDown);
+      log('isDown: $keyDown');
     } else if (event.data.keyLabel == "s") {
-      spaceship.down();
+      spaceship.down(keyDown);
     }
   }
 

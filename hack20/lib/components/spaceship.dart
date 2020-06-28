@@ -52,6 +52,9 @@ class Spaceship {
   Offset _center;
   Path _path;
 
+  double _thrust = 0;
+  double _directionAngle = 0;
+
   Offset get center {
     return _rect.center;
   }
@@ -61,10 +64,25 @@ class Spaceship {
   }
 
   void update(double t) {
-    if (gameTime.earth.distance(_rect.center) > 0) {
-      var gravity = gameTime.earth.gravityStrenght(center);
-      speed = speed.translate(gravity.dx * t, gravity.dy * t);
+    // direction
+    direction += _radians(_directionAngle);
+    if (direction > _radians(360)) {
+      direction = direction - _radians(360);
     }
+    if (direction < 0) {
+      direction = _radians(360) + direction;
+    }
+
+    // force
+    Offset gravity = Offset.zero;
+    if (gameTime.earth.distance(_rect.center) > 0 &&
+        gameTime.moon.distance(_rect.center) > 0) {
+      gravity = gameTime.earth.gravityStrenght(_rect.center) +
+          gameTime.moon.gravityStrenght(_rect.center);
+    }
+    Offset thrust = Offset.fromDirection(direction, _thrust);
+    Offset force = gravity + thrust;
+    speed = speed.translate(force.dx * t, force.dy * t);
 
     _rect = Rect.fromCenter(
       center: Offset(
@@ -139,40 +157,50 @@ class Spaceship {
     return path;
   }
 
-  static const double SPEED_BOOST = 50;
-  static const double ROTATION_ANGLE = 10;
+  static const double SPEED_BOOST = 350;
+  static const double ROTATION_ANGLE = 5;
   static const double MAX_SPEED = 150;
 
-  void right() {
-    direction += _radians(ROTATION_ANGLE);
-    if (direction > _radians(360)) {
-      direction = direction - _radians(360);
-    }
+  void right(bool keyDown) {
+    _directionAngle = keyDown ? ROTATION_ANGLE : 0;
+    // direction += _radians(ROTATION_ANGLE);
+    // if (direction > _radians(360)) {
+    //   direction = direction - _radians(360);
+    // }
   }
 
-  void left() {
-    direction += _radians(-ROTATION_ANGLE);
-    if (direction < 0) {
-      direction = _radians(360) + direction;
-    }
+  void left(bool keyDown) {
+    _directionAngle = keyDown ? -ROTATION_ANGLE : 0;
+    // direction += _radians(-ROTATION_ANGLE);
+    // if (direction < 0) {
+    //   direction = _radians(360) + direction;
+    // }
   }
 
-  void down() {
-    speed = speed.translate(
-        -math.cos(direction) * SPEED_BOOST, -math.sin(direction) * SPEED_BOOST);
-    if (speed.distance > MAX_SPEED) {
-      var norm = MAX_SPEED / speed.distance;
-      speed = speed.scale(norm, norm);
-    }
+  void down(bool keyDown) {
+    _thrust = keyDown ? -SPEED_BOOST : 0;
+    // _thrust -= SPEED_BOOST;
+    // if (_thrust < -MAX_SPEED) {
+    //   _thrust = -MAX_SPEED;
+    // }
+
+    // speed = speed.translate(
+    //     -math.cos(direction) * SPEED_BOOST, -math.sin(direction) * SPEED_BOOST);
+    // if (speed.distance > MAX_SPEED) {
+    //   var norm = MAX_SPEED / speed.distance;
+    //   speed = speed.scale(norm, norm);
+    // }
   }
 
-  void up() {
-    speed = speed.translate(
-        math.cos(direction) * SPEED_BOOST, math.sin(direction) * SPEED_BOOST);
-    if (speed.distance > MAX_SPEED) {
-      var norm = MAX_SPEED / speed.distance;
-      speed = speed.scale(norm, norm);
-    }
+  void up(bool keyDown) {
+    _thrust = keyDown ? SPEED_BOOST : 0;
+
+    // speed = speed.translate(
+    //     math.cos(direction) * SPEED_BOOST, math.sin(direction) * SPEED_BOOST);
+    // if (speed.distance > MAX_SPEED) {
+    //   var norm = MAX_SPEED / speed.distance;
+    //   speed = speed.scale(norm, norm);
+    // }
   }
 
   void _reset() {

@@ -28,4 +28,35 @@ class Geometry {
     path.addPolygon(points, true);
     return path;
   }
+
+  static Path randomPolygon(Rect rect, int segments) {
+    Random random = Random();
+
+    // 1. background
+    double radius = min(rect.width, rect.height) * 0.5;
+
+    List<Offset> leftPoints = List<Offset>();
+    List<Offset> rightPoints = List<Offset>();
+
+    double angle = 0;
+    double angleSegment = pi / segments;
+    for (var i = 0; i <= segments; i++) {
+      double randomRadius = radius * (0.3 + 0.7 * random.nextDouble());
+      double dx = sin(angle) * randomRadius;
+      double dy = -cos(angle) * randomRadius;
+      leftPoints.add(Offset(rect.center.dx - dx, rect.center.dy + dy));
+      if (dx > 0) {
+        randomRadius = radius * (0.3 + 0.7 * random.nextDouble());
+        dx = sin(angle) * randomRadius;
+        dy = -cos(angle) * randomRadius;
+        rightPoints.add(Offset(rect.center.dx + dx, rect.center.dy + dy));
+      }
+      angle += angleSegment;
+    }
+    List<Offset> points = leftPoints + rightPoints.reversed.toList();
+
+    Path path = Path();
+    path.addPolygon(points, true);
+    return path;
+  }
 }
