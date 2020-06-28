@@ -13,6 +13,13 @@ class Entry {
   Entry(this.name, this.score);
   final String name;
   final int score;
+
+  @override
+  bool operator ==(Object other) =>
+      other is Entry && other.name == name && other.score == score;
+
+  @override
+  int get hashCode => super.hashCode;
 }
 
 class Scoreboard {
@@ -157,9 +164,11 @@ class Scoreboard {
         line += scoreStr;
       }
 
+      bool highlight = _data.length > i ? _data[i] == _latestScore : false;
+
       TextSpan span = TextSpan(
           style: TextStyle(
-            color: WHITE,
+            color: highlight ? GREEN : WHITE,
             fontSize: 24.0,
             fontFamily: 'Joystix',
           ),

@@ -151,12 +151,10 @@ class GameTime extends Game with KeyboardEvents {
     // components
     if (_gameRunning()) {
       background?.update(t);
-      if (_isGameEnded() || _increasedLevelTicks <= 0) {
-        earth?.update(t);
-        moon?.update(t);
-        trashPile?.update(t);
-        spaceship?.update(t);
-      }
+      earth?.update(t);
+      moon?.update(t);
+      trashPile?.update(t);
+      spaceship?.update(t);
       status?.update(t);
       level?.update(t);
 
@@ -204,7 +202,7 @@ class GameTime extends Game with KeyboardEvents {
     } else if (event.data.keyLabel == "s") {
       spaceship.down(keyDown);
     } else if (event.data.keyLabel == " ") {
-      if (keyDown && _showIntro) {
+      if (!keyDown && _showIntro) {
         _showIntro = false;
         startGame();
       }
