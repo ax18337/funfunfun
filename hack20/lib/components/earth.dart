@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:flutter/widgets.dart';
 
 import '../game_time.dart';
+import 'geography.dart';
 
 const GREEN = Color(0xff7fff00);
 const YELLOW = Color(0xffd9eb4b);
@@ -51,8 +52,6 @@ class Earth {
       ..strokeJoin = StrokeJoin.round
       ..strokeWidth = 3
       ..isAntiAlias = true;
-    _angle = 0;
-    _pitch = 0;
   }
 
   final GameTime gameTime;
@@ -64,8 +63,14 @@ class Earth {
   Paint _retroPaint;
   Paint _futurePaint;
   Paint _glowPaint;
-  double _angle;
-  double _pitch;
+
+  Americas _americas = Americas();
+  AfricaAsiaEurope _africaAsiaEurope = AfricaAsiaEurope();
+  Arctic _arctic = Arctic();
+  Greenland _greenland = Greenland();
+  Brittain _brittain = Brittain();
+  Cuba _cuba = Cuba();
+  Caribbeans _caribbeans = Caribbeans();
 
   void render(Canvas c) {
     switch (gameTime.mode) {
@@ -78,9 +83,7 @@ class Earth {
     }
   }
 
-  void update(double t) {
-    _angle = _angle + speed * t;
-  }
+  void update(double t) {}
 
   void _renderRetro(Canvas c) {
     // 1. background
@@ -115,7 +118,26 @@ class Earth {
     c.drawPath(area, _areaPaint);
     c.drawPath(area, _retroPaint);
 
-    // meridians
+    // continents
+
+    c.save();
+
+    double scale = _rect.width / _americas.size.width;
+    Offset translation = Offset(
+        _rect.center.dx - _americas.size.width * 0.5 * scale,
+        _rect.center.dy - _americas.size.height * 0.5 * scale);
+    c.translate(translation.dx, translation.dy);
+    c.scale(scale);
+
+    c.drawPath(_americas.path, _retroPaint);
+    c.drawPath(_africaAsiaEurope.path, _retroPaint);
+    c.drawPath(_arctic.path, _retroPaint);
+    c.drawPath(_greenland.path, _retroPaint);
+    c.drawPath(_brittain.path, _retroPaint);
+    c.drawPath(_cuba.path, _retroPaint);
+    c.drawPath(_caribbeans.path, _retroPaint);
+
+    c.restore();
   }
 
   void _renderFuture(Canvas c) {
@@ -140,6 +162,27 @@ class Earth {
     c.drawPath(area, _glowPaint);
 
     c.drawPath(area, _futurePaint);
+
+    // continents
+
+    c.save();
+
+    double scale = _rect.width / _americas.size.width;
+    Offset translation = Offset(
+        _rect.center.dx - _americas.size.width * 0.5 * scale,
+        _rect.center.dy - _americas.size.height * 0.5 * scale);
+    c.translate(translation.dx, translation.dy);
+    c.scale(scale);
+
+    c.drawPath(_americas.path, _futurePaint);
+    c.drawPath(_africaAsiaEurope.path, _futurePaint);
+    c.drawPath(_arctic.path, _futurePaint);
+    c.drawPath(_greenland.path, _futurePaint);
+    c.drawPath(_brittain.path, _futurePaint);
+    c.drawPath(_cuba.path, _futurePaint);
+    c.drawPath(_caribbeans.path, _futurePaint);
+
+    c.restore();
   }
 
   Offset gravityStrenght(Offset point) {

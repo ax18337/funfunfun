@@ -35,7 +35,7 @@ class GameTime extends Game with KeyboardEvents {
     final _size = await Flame.util.initialDimensions();
     resize(_size);
 
-    mode = Mode.retro;
+    mode = Mode.future;
 
     // components
     background = Background(gameTime: this);
