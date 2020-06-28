@@ -1,11 +1,11 @@
 {
-    "name": "hack20",
-    "short_name": "hack20",
+    "name": "GRAVITY BITES BACK",
+    "short_name": "GBB",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
     "theme_color": "#0175C2",
-    "description": "A new Flutter project.",
+    "description": "A new Flutter game.",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [
