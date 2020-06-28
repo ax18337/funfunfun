@@ -204,7 +204,7 @@ class GameTime extends Game with KeyboardEvents {
     } else if (event.data.keyLabel == "s") {
       spaceship.down(keyDown);
     } else if (event.data.keyLabel == " ") {
-      if (keyDown && (_showIntro || _isGameEnded())) {
+      if (!keyDown && (_showIntro || _isGameEnded())) {
         _showIntro = false;
         startGame();
       }
