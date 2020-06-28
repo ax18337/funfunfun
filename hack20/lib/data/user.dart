@@ -2,8 +2,15 @@ class User {
   int _lives = 3;
   int _level = 1;
 
+  Function deathCallback;
+
+  User({this.deathCallback});
+
   void lostLife() {
     _lives -= 1;
+    if (_lives == 0) {
+      deathCallback();
+    }
   }
 
   void nextLevel() {

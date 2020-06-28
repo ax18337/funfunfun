@@ -38,6 +38,7 @@ class Scoreboard {
   Paint _retroPaint;
   Paint _futurePaint;
   Map<String, int> _data;
+  Score _latestScore;
 
   Offset get center {
     return _rect.center;
@@ -99,4 +100,19 @@ class Scoreboard {
   }
 
   void _drawScoreboardFuture(Canvas c) {}
+
+  void latestScore(String username, int score) {
+    _latestScore = Score(username, score);
+    Firestore.instance.collection("scores").document().setData({
+      'user': username, 'score': score
+    });
+  }
 }
+
+class Score {
+  String username;
+  int score;
+
+  Score(this.username, this.score);
+}
+

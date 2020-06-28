@@ -47,7 +47,7 @@ class GameTime extends Game with KeyboardEvents {
 
   // level
   double _increasedLevelTicks = 5;
-  User user = User();
+  User user;
 
   Future<void> get initialize async {
     final _size = await Flame.util.initialDimensions();
@@ -78,6 +78,8 @@ class GameTime extends Game with KeyboardEvents {
     level = Level(gameTime: this);
 
     scoreboard = Scoreboard(gameTime: this);
+
+    user = User(deathCallback: () => scoreboard?.latestScore("anon", trashPile.score));
 
     // effects
     interlace = Interlace(gameTime: this, size: 2);
@@ -133,7 +135,7 @@ class GameTime extends Game with KeyboardEvents {
     // efffects
     interlace?.update(t);
 
-    if (_isGameEnded()) {
+    if (!_isGameEnded()) {
       _checkLevelCompleted();
     }
     if (_increasedLevelTicks > 0) {
@@ -156,7 +158,6 @@ class GameTime extends Game with KeyboardEvents {
       spaceship.right(keyDown);
     } else if (event.data.keyLabel == "w") {
       spaceship.up(keyDown);
-      log('isDown: $keyDown');
     } else if (event.data.keyLabel == "s") {
       spaceship.down(keyDown);
     }
@@ -173,7 +174,6 @@ class GameTime extends Game with KeyboardEvents {
 
   void _checkLevelCompleted() {
     if (trashPile != null ? trashPile.score > user.level * 10 : false) {
-      debugPrint("increasing level: ${trashPile?.score}");
       _increasedLevelTicks = 4;
       user.nextLevel();
     }
