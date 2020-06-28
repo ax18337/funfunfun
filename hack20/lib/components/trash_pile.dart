@@ -102,4 +102,12 @@ class TrashPile {
   int get score {
     return _recycled.fold(0, (previous, current) => previous + current.size);
   }
+
+  void reset() {
+    _trash.clear();
+    _pile.clear();
+    _recycled.clear();
+    pileCount = 0;
+    recycledCount = 0;
+  }
 }

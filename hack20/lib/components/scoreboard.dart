@@ -89,7 +89,8 @@ class Scoreboard {
             textAlign: TextAlign.center, fontSize: 24, maxLines: 1))
           ..addText("$key --- $value");
 
-        var paragraph = builder.build()..layout(ParagraphConstraints(width: 500));
+        var paragraph = builder.build()
+          ..layout(ParagraphConstraints(width: 500));
         c.drawParagraph(paragraph, Offset(20, space));
         space += 40;
       });

@@ -55,6 +55,7 @@ class Spaceship {
 
   double _thrust = 0;
   double _directionAngle = 0;
+  double _killed = 0;
 
   Offset get center {
     return _rect.center;
@@ -65,6 +66,11 @@ class Spaceship {
   }
 
   void update(double t) {
+    // killed
+    if (_killed > 0) {
+      _killed -= t;
+    }
+
     // direction
     direction += _radians(_directionAngle);
     if (direction > _radians(360)) {
@@ -93,11 +99,12 @@ class Spaceship {
       height: _rect.height,
     );
 
-    if (_rect.center.dx < 0 ||
-        _rect.center.dx > gameTime.screenSize.width ||
-        _rect.center.dy < 0 ||
-        _rect.center.dy > gameTime.screenSize.height) {
-      _reset();
+    if (!gameTime.isInside(_rect.center) ||
+        gameTime.earth.distance(_rect.center) <= 0 ||
+        gameTime.moon.distance(_rect.center) <= 0) {
+      gameTime.user.lostLife();
+      reset();
+      _killed = 2;
     }
   }
 
@@ -117,6 +124,13 @@ class Spaceship {
   }
 
   void _drawShipRetro(Canvas c) {
+    if (_killed > 0) {
+      if ((_killed * 4).floor() % 2 == 0) {
+        c.drawColor(WHITE, BlendMode.color);
+        return;
+      }
+    }
+
     c.save();
 
     var translate = _rect.center - _center;
@@ -172,10 +186,10 @@ class Spaceship {
     _thrust = keyDown ? SPEED_BOOST : 0;
   }
 
-  void _reset() {
+  void reset() {
     _rect = Rect.fromCenter(
-      center:
-          Offset(gameTime.screenSize.width / 2, gameTime.screenSize.height / 2),
+      center: Offset(
+          gameTime.screenSize.width * 0.1, gameTime.screenSize.height * 0.1),
       width: _rect.width,
       height: _rect.height,
     );

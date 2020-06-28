@@ -46,7 +46,6 @@ class GameTime extends Game with KeyboardEvents {
   Interlace interlace;
 
   // level
-  bool _gameEnded = false;
   double _increasedLevelTicks = 5;
   User user = User();
 
@@ -72,7 +71,7 @@ class GameTime extends Game with KeyboardEvents {
     );
     spaceship = Spaceship(
         gameTime: this,
-        center: Offset(_size.width / 2, _size.width / 2),
+        center: Offset(_size.width * 0.1, _size.width * 0.1),
         size: 30);
     trashPile = TrashPile(gameTime: this);
     status = Status(gameTime: this);
@@ -99,7 +98,7 @@ class GameTime extends Game with KeyboardEvents {
 
   @override
   void render(Canvas c) {
-    if (user.lives == 0) {
+    if (_isGameEnded()) {
       scoreboard?.render(c);
     } else {
       // components
@@ -122,7 +121,7 @@ class GameTime extends Game with KeyboardEvents {
   void update(double t) {
     // components
     background?.update(t);
-    if (_increasedLevelTicks <= 0) {
+    if (_isGameEnded() || _increasedLevelTicks <= 0) {
       earth?.update(t);
       moon?.update(t);
       trashPile?.update(t);
@@ -134,8 +133,7 @@ class GameTime extends Game with KeyboardEvents {
     // efffects
     interlace?.update(t);
 
-    this._gameEnded = _isGameEnded();
-    if (!_gameEnded) {
+    if (_isGameEnded()) {
       _checkLevelCompleted();
     }
     if (_increasedLevelTicks > 0) {
@@ -165,14 +163,31 @@ class GameTime extends Game with KeyboardEvents {
   }
 
   bool _isGameEnded() {
-    return trashPile != null ? trashPile.pollution > 500 : false;
+    if (trashPile != null && user != null) {
+      if (trashPile.status <= 0 || user.lives <= 0) {
+        return true;
+      }
+    }
+    return false;
   }
 
   void _checkLevelCompleted() {
     if (trashPile != null ? trashPile.score > user.level * 10 : false) {
       debugPrint("increasing level: ${trashPile?.score}");
-      _increasedLevelTicks = 10;
+      _increasedLevelTicks = 4;
       user.nextLevel();
     }
+  }
+
+  bool isInside(Offset point) {
+    return point.dx >= 0 &&
+        point.dx <= screenSize.width &&
+        point.dy >= 0 &&
+        point.dy <= screenSize.height;
+  }
+
+  void startGame() {
+    _increasedLevelTicks = 5;
+    user.reset();
   }
 }

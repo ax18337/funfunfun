@@ -10,6 +10,11 @@ class User {
     _level += 1;
   }
 
+  void reset() {
+    _level = 1;
+    _lives = 3;
+  }
+
   int get lives {
     return _lives;
   }
