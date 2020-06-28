@@ -71,24 +71,11 @@ class TrashPile {
     var distance = (_random.nextDouble() - 0.5) *
         (gameTime.screenSize.width - gameTime.earth.size.width) *
         0.05;
-    var angle = _random.nextDouble() * pi / 2;
-    var quadrant = (_random.nextDouble() * 4).floor();
+    var angle = _random.nextDouble() * pi * 2;
     var radius = gameTime.screenSize.width * 0.4 + distance;
 
     var dx = sin(angle) * radius;
     var dy = cos(angle) * radius;
-    switch (quadrant) {
-      case 0:
-        dx = -dx;
-        break;
-      case 1:
-        dy = -dy;
-        break;
-      case 2:
-        dx = -dx;
-        dy = -dy;
-        break;
-    }
 
     var x = gameTime.earth.center.dx + dx;
     var y = gameTime.earth.center.dy + dy;

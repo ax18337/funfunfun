@@ -7,7 +7,7 @@ import 'star.dart';
 
 const BLACK = Color(0xff000000);
 const DEEPBLUE = Color(0xff010b19);
-const numOfStars = 200;
+const numOfStars = 50;
 
 class Background {
   Background({

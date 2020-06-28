@@ -1,6 +1,7 @@
 import 'dart:math';
 import 'dart:ui';
 import 'package:flutter/widgets.dart';
+import 'package:hack20/utils/neon.dart';
 import 'dart:developer' as dev;
 
 import '../game_time.dart';
@@ -82,21 +83,7 @@ class Trash {
     if (gameTime.mode == Mode.retro) {
       c.drawPath(_path, _retroPaint);
     } else {
-      // neon blur
-      _glowPaint.color = _futurePaint.color.withOpacity(0.1);
-      _glowPaint.strokeWidth = 6;
-      c.drawPath(_path, _glowPaint);
-      _glowPaint.color = _futurePaint.color.withOpacity(0.2);
-      _glowPaint.strokeWidth = 5;
-      c.drawPath(_path, _glowPaint);
-      _glowPaint.color = _futurePaint.color.withOpacity(0.3);
-      _glowPaint.strokeWidth = 4;
-      c.drawPath(_path, _glowPaint);
-      _glowPaint.color = _futurePaint.color.withOpacity(0.35);
-      _glowPaint.strokeWidth = 3;
-      c.drawPath(_path, _glowPaint);
-
-      c.drawPath(_path, _futurePaint);
+      Neon.render(c, _path, _futurePaint, 1);
     }
     c.restore();
   }
@@ -133,13 +120,6 @@ class Trash {
         break;
     }
 
-    // if (distance < max * 0.25) {
-    //   color = RED;
-    // } else if (distance < max * 0.5) {
-    //   color = ORANGE;
-    // } else if (distance < max * 0.75) {
-    //   color = YELLOW;
-    // }
     _futurePaint.color = color;
     _glowPaint.color = color.withOpacity(0.6);
   }

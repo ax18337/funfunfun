@@ -1,6 +1,7 @@
 import 'dart:math';
 import 'dart:ui';
 import 'package:flutter/widgets.dart';
+import 'package:hack20/utils/neon.dart';
 
 import '../game_time.dart';
 import 'geography.dart';
@@ -45,13 +46,6 @@ class Earth {
       ..strokeJoin = StrokeJoin.round
       ..strokeWidth = 2
       ..isAntiAlias = true;
-    _glowPaint = Paint()
-      ..style = PaintingStyle.stroke
-      ..color = GREEN.withOpacity(0.6)
-      ..strokeCap = StrokeCap.round
-      ..strokeJoin = StrokeJoin.round
-      ..strokeWidth = 3
-      ..isAntiAlias = true;
   }
 
   final GameTime gameTime;
@@ -62,7 +56,6 @@ class Earth {
   Paint _areaPaint;
   Paint _retroPaint;
   Paint _futurePaint;
-  Paint _glowPaint;
 
   Americas _americas = Americas();
   AfricaAsiaEurope _africaAsiaEurope = AfricaAsiaEurope();
@@ -116,6 +109,7 @@ class Earth {
 
     _areaPaint.color = BLACK;
     c.drawPath(area, _areaPaint);
+    _retroPaint.strokeWidth = 2;
     c.drawPath(area, _retroPaint);
 
     // continents
@@ -129,6 +123,7 @@ class Earth {
     c.translate(translation.dx, translation.dy);
     c.scale(scale);
 
+    _retroPaint.strokeWidth = 2 / scale;
     c.drawPath(_americas.path, _retroPaint);
     c.drawPath(_africaAsiaEurope.path, _retroPaint);
     c.drawPath(_arctic.path, _retroPaint);
@@ -147,24 +142,10 @@ class Earth {
     _areaPaint.color = DEEPBLUE;
     c.drawPath(area, _areaPaint);
 
-    // neon blur
-    _glowPaint.color = _futurePaint.color.withOpacity(0.1);
-    _glowPaint.strokeWidth = 6;
-    c.drawPath(area, _glowPaint);
-    _glowPaint.color = _futurePaint.color.withOpacity(0.2);
-    _glowPaint.strokeWidth = 5;
-    c.drawPath(area, _glowPaint);
-    _glowPaint.color = _futurePaint.color.withOpacity(0.3);
-    _glowPaint.strokeWidth = 4;
-    c.drawPath(area, _glowPaint);
-    _glowPaint.color = _futurePaint.color.withOpacity(0.35);
-    _glowPaint.strokeWidth = 3;
-    c.drawPath(area, _glowPaint);
-
-    c.drawPath(area, _futurePaint);
+    // outline
+    Neon.render(c, area, _futurePaint, 1);
 
     // continents
-
     c.save();
 
     double scale = _rect.width / _americas.size.width;
@@ -174,13 +155,13 @@ class Earth {
     c.translate(translation.dx, translation.dy);
     c.scale(scale);
 
-    c.drawPath(_americas.path, _futurePaint);
-    c.drawPath(_africaAsiaEurope.path, _futurePaint);
-    c.drawPath(_arctic.path, _futurePaint);
-    c.drawPath(_greenland.path, _futurePaint);
-    c.drawPath(_brittain.path, _futurePaint);
-    c.drawPath(_cuba.path, _futurePaint);
-    c.drawPath(_caribbeans.path, _futurePaint);
+    Neon.render(c, _americas.path, _futurePaint, scale);
+    Neon.render(c, _africaAsiaEurope.path, _futurePaint, scale);
+    Neon.render(c, _arctic.path, _futurePaint, scale);
+    Neon.render(c, _greenland.path, _futurePaint, scale);
+    Neon.render(c, _brittain.path, _futurePaint, scale);
+    Neon.render(c, _cuba.path, _futurePaint, scale);
+    Neon.render(c, _caribbeans.path, _futurePaint, scale);
 
     c.restore();
   }

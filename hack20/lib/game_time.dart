@@ -4,6 +4,7 @@ import 'package:flame/game.dart';
 import 'package:flame/keyboard.dart';
 import 'package:flutter/src/services/raw_keyboard.dart';
 import 'package:hack20/components/interlace.dart';
+import 'package:hack20/components/moon.dart';
 import 'package:hack20/components/scoreboard.dart';
 import 'package:hack20/components/trash_pile.dart';
 import 'components/background.dart';
@@ -24,6 +25,7 @@ class GameTime extends Game with KeyboardEvents {
   // components
   Background background;
   Earth earth;
+  Moon moon;
   Spaceship spaceship;
   TrashPile trashPile;
 
@@ -51,6 +53,12 @@ class GameTime extends Game with KeyboardEvents {
       segments: 10,
       gravity: 9.81 * 50,
     );
+    moon = Moon(
+      gameTime: this,
+      speed: 1,
+      segments: 8,
+      gravity: 0,
+    );
     spaceship = Spaceship(
         gameTime: this,
         center: Offset(_size.width / 2, _size.width / 2),
@@ -73,22 +81,23 @@ class GameTime extends Game with KeyboardEvents {
 
   @override
   void render(Canvas c) {
-
     if (_gameEnded) {
       scoreboard?.render(c);
     } else {
       // components
       background?.render(c);
       earth?.render(c);
+      moon?.render(c);
       trashPile?.render(c);
       spaceship?.render(c);
-      // efffects
-      interlace?.render(c);
 
       if (trashPile != null) {
         _drawScore(c);
       }
     }
+
+    // efffects
+    interlace?.render(c);
   }
 
   @override
@@ -96,8 +105,10 @@ class GameTime extends Game with KeyboardEvents {
     // components
     background?.update(t);
     earth?.update(t);
+    moon?.update(t);
     trashPile?.update(t);
     spaceship?.update(t);
+
     // efffects
     interlace?.update(t);
 
@@ -126,10 +137,8 @@ class GameTime extends Game with KeyboardEvents {
 
     var builder = ParagraphBuilder(
         ParagraphStyle(textAlign: TextAlign.left, fontSize: 18, maxLines: 1))
-      ..addText("score = ${trashPile.score} pollution = ${trashPile.pollution} level = $level");
-
-    c.drawColor(Color(0xffffffff), BlendMode.color);
-
+      ..addText(
+          "score = ${trashPile.score} pollution = ${trashPile.pollution} level = $level");
     var paragraph = builder.build()..layout(ParagraphConstraints(width: 500));
     c.drawParagraph(paragraph, Offset(20, 20));
 
