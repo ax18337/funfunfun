@@ -1,23 +1,24 @@
 import 'dart:developer';
 import 'dart:ui';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flame/flame.dart';
 import 'package:flame/game.dart';
 import 'package:flame/keyboard.dart';
-import 'package:flutter/animation.dart';
 import 'package:flutter/cupertino.dart';
+// ignore: implementation_imports
 import 'package:flutter/src/services/raw_keyboard.dart';
+
 import 'package:hack20/components/interlace.dart';
 import 'package:hack20/components/moon.dart';
 import 'package:hack20/components/scoreboard.dart';
 import 'package:hack20/components/status.dart';
 import 'package:hack20/components/trash_pile.dart';
 import 'package:hack20/data/user.dart';
+
 import 'components/background.dart';
 import 'components/earth.dart';
+import 'components/level.dart';
 import 'components/spaceship.dart';
-import 'dart:developer';
 
 enum Mode { retro, future }
 
@@ -36,6 +37,7 @@ class GameTime extends Game with KeyboardEvents {
   Spaceship spaceship;
   TrashPile trashPile;
   Status status;
+  Level level;
 
   // scoreboard
   Scoreboard scoreboard;
@@ -45,7 +47,7 @@ class GameTime extends Game with KeyboardEvents {
 
   // level
   bool _gameEnded = false;
-  double _increasedLevelTicks = 0;
+  double _increasedLevelTicks = 5;
   User user = User();
 
   Future<void> get initialize async {
@@ -74,6 +76,7 @@ class GameTime extends Game with KeyboardEvents {
         size: 30);
     trashPile = TrashPile(gameTime: this);
     status = Status(gameTime: this);
+    level = Level(gameTime: this);
 
     scoreboard = Scoreboard(gameTime: this);
 
@@ -90,6 +93,7 @@ class GameTime extends Game with KeyboardEvents {
     // trashPile?.updateSize(size);
     // spaceship?.updateSize(tsize);
     // status?.updateSize(size);
+    // level?.updateSize(size);
     super.resize(size);
   }
 
@@ -98,20 +102,16 @@ class GameTime extends Game with KeyboardEvents {
     if (user.lives == 0) {
       scoreboard?.render(c);
     } else {
-      if (_increasedLevelTicks > 0) {
-        _renderLevelUpdated(c);
-      }
       // components
       background?.render(c);
       earth?.render(c);
       moon?.render(c);
       trashPile?.render(c);
       spaceship?.render(c);
-      status?.render(c);
-
-      if (trashPile != null) {
-        // _drawScore(c);
+      if (_increasedLevelTicks > 0) {
+        level?.render(c);
       }
+      status?.render(c);
     }
 
     // efffects
@@ -122,11 +122,14 @@ class GameTime extends Game with KeyboardEvents {
   void update(double t) {
     // components
     background?.update(t);
-    earth?.update(t);
-    moon?.update(t);
-    trashPile?.update(t);
-    spaceship?.update(t);
+    if (_increasedLevelTicks <= 0) {
+      earth?.update(t);
+      moon?.update(t);
+      trashPile?.update(t);
+      spaceship?.update(t);
+    }
     status?.update(t);
+    level?.update(t);
 
     // efffects
     interlace?.update(t);
@@ -161,19 +164,6 @@ class GameTime extends Game with KeyboardEvents {
     }
   }
 
-  void _drawScore(Canvas c) {
-    c.save();
-
-    var builder = ParagraphBuilder(
-        ParagraphStyle(textAlign: TextAlign.left, fontSize: 18, maxLines: 1))
-      ..addText(
-          "score = ${trashPile.score} pollution = ${trashPile.pollution} level = ${user.level}");
-    var paragraph = builder.build()..layout(ParagraphConstraints(width: 500));
-    c.drawParagraph(paragraph, Offset(20, 20));
-
-    c.restore();
-  }
-
   bool _isGameEnded() {
     return trashPile != null ? trashPile.pollution > 500 : false;
   }
@@ -181,21 +171,8 @@ class GameTime extends Game with KeyboardEvents {
   void _checkLevelCompleted() {
     if (trashPile != null ? trashPile.score > user.level * 10 : false) {
       debugPrint("increasing level: ${trashPile?.score}");
-      _increasedLevelTicks = 2000;
+      _increasedLevelTicks = 10;
       user.nextLevel();
     }
-  }
-
-  void _renderLevelUpdated(Canvas c) {
-    c.save();
-
-    debugPrint("we try");
-
-    var builder = ParagraphBuilder(
-        ParagraphStyle(textAlign: TextAlign.left, fontSize: 48, maxLines: 1))
-      ..addText("Now @Level ${user.level}");
-    var paragraph = builder.build()..layout(ParagraphConstraints(width: 500));
-    c.drawParagraph(paragraph, Offset(20, 80));
-    c.restore();
   }
 }
