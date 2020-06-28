@@ -16,6 +16,7 @@ import 'package:hack20/components/scoreboard.dart';
 import 'package:hack20/components/status.dart';
 import 'package:hack20/components/trash_pile.dart';
 import 'package:hack20/data/user.dart';
+import 'package:hack20/utils/sounds.dart';
 
 import 'components/background.dart';
 import 'components/earth.dart';
@@ -62,6 +63,9 @@ class GameTime extends Game with KeyboardEvents {
   Future<void> get initialize async {
     final _size = await Flame.util.initialDimensions();
     resize(_size);
+
+    // init audio SFX
+    Flame.audio.loadAll(Sounds.all);
 
     mode = Mode.retro;
 

@@ -1,8 +1,10 @@
 import 'dart:math' as math;
 import 'dart:ui';
+import 'package:flame/flame.dart';
 import 'package:flutter/widgets.dart';
 import 'package:hack20/utils/geometry.dart';
 import 'package:hack20/utils/neon.dart';
+import 'package:hack20/utils/sounds.dart';
 
 import '../game_time.dart';
 
@@ -105,6 +107,7 @@ class Spaceship {
       gameTime.userLostLife();
       reset();
       _killed = 2;
+      Flame.audio.play(Sounds.crash);
     }
   }
 

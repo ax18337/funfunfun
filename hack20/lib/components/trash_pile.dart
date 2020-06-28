@@ -1,6 +1,8 @@
 import 'dart:math';
 import 'dart:ui';
+import 'package:flame/flame.dart';
 import 'package:flutter/widgets.dart';
+import 'package:hack20/utils/sounds.dart';
 
 import '../game_time.dart';
 import 'trash.dart';
@@ -54,10 +56,12 @@ class TrashPile {
         outOfScreen.add(index);
         _pile.add(trash);
         pileCount += 1;
+        Flame.audio.play(Sounds.drop);
       } else if (gameTime.spaceship.distance(trash.center) <= 0) {
         outOfScreen.add(index);
         _recycled.add(trash);
         recycledCount += 1;
+        Flame.audio.play(Sounds.pickup);
       }
     });
 
