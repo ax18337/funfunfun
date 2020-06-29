@@ -12,13 +12,13 @@ const GREEN = Color(0xff44ff66);
 const BLACK = Color(0xfff000000);
 const DEEPBLUE = Color(0xff010b19);
 
-class InputBox {
-  InputBox({@required this.gameTime}) {
-    _rect = Rect.fromCenter(
-      center: Offset(
-          gameTime.screenSize.width * 0.5, gameTime.screenSize.height * 0.5),
-      width: 100,
-      height: 100,
+class Welcome {
+  Welcome({@required this.gameTime}) {
+    _rect = Rect.fromLTWH(
+      0,
+      0,
+      gameTime.screenSize.width,
+      gameTime.screenSize.height,
     );
     _backPaint = Paint()
       ..style = PaintingStyle.fill
@@ -63,6 +63,10 @@ class InputBox {
   void update(double t) {}
 
   void _drawRetro(Canvas c) {
+    // instructions
+    double y = _drawInstructions(c, WHITE, 'Joystix') + 30;
+
+    // name input
     TextSpan span = TextSpan(
         style: TextStyle(
           color: WHITE,
@@ -77,7 +81,7 @@ class InputBox {
     tp.layout();
     Rect box = Rect.fromLTWH(
       _rect.center.dx - tp.size.width * 0.5,
-      _rect.center.dy - tp.size.height * 0.5,
+      y,
       tp.size.width,
       tp.size.height,
     );
@@ -90,9 +94,12 @@ class InputBox {
   }
 
   void _drawFuture(Canvas c) {
+    // instructions
+    double y = _drawInstructions(c, GREEN, 'Library-3-am-soft') + 30;
+
     TextSpan span = TextSpan(
         style: TextStyle(
-          color: WHITE,
+          color: GREEN,
           fontSize: 24.0,
           fontFamily: 'Library-3-am-soft',
         ),
@@ -104,7 +111,7 @@ class InputBox {
     tp.layout();
     Rect box = Rect.fromLTWH(
       _rect.center.dx - tp.size.width * 0.5,
-      _rect.center.dy - tp.size.height * 0.5,
+      y,
       tp.size.width,
       tp.size.height,
     );
@@ -115,4 +122,40 @@ class InputBox {
 
     tp.paint(c, box.topLeft);
   }
+
+  double _drawInstructions(Canvas c, Color textColor, String fontFamily) {
+    TextSpan span = TextSpan(
+        style: TextStyle(
+          color: textColor,
+          fontSize: 24.0,
+          fontFamily: fontFamily,
+        ),
+        text: _text);
+    TextPainter tp = TextPainter(
+        text: span,
+        textAlign: TextAlign.left,
+        textDirection: TextDirection.ltr);
+    tp.layout(maxWidth: _rect.width * 0.8);
+    Rect box = Rect.fromLTWH(
+      _rect.center.dx - tp.size.width * 0.5,
+      30,
+      tp.size.width,
+      tp.size.height,
+    );
+    tp.paint(c, box.topLeft);
+
+    return 30 + tp.height;
+  }
+
+  String _text = """Controls
+w - forward thrust
+s - bacward thrust
+a - rotate left
+b - rotate right
+
+Options
+r - retro mode
+f - neon mode
+
+Enter your name in case you end up in the hall of fame.""";
 }
