@@ -163,10 +163,10 @@ class Intro {
   String _text =
       """In the 22nd century the human kind became overrun by trash of their own making.
 There was no place on Earth to manage the vastness of greed induced and man produced garbage.
-The powers at be came to a brilliant idea,they thought, to launch the trash off of the planet and into outer space...
+The powers that be came to a brilliant idea, they thought, to launch the trash off of the planet and into outer space...
 but their calculations were wrong...
 and gravity has slowly been pulling the waste back to Earth causing catastrophic fiery re-entry showers burning the atmosphere.
-Now a team of brave space captains is putting their lives on the line to protect the Earth from these trash meteors.""";
+Now a team of brave space garbage collectors is putting their lives on the line to protect the Earth from these trash meteors.""";
 
   void _addTrash() {
     Rect rect = _rect.inflate(-40);
