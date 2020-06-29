@@ -148,7 +148,8 @@ class Scoreboard {
     _drawFooter(c, textColor, fontFamily);
   }
 
-  void _drawLoaded(Canvas c, Color textColor, Color hightlightColor, String fontFamily) {
+  void _drawLoaded(
+      Canvas c, Color textColor, Color hightlightColor, String fontFamily) {
     _drawHeader(c, textColor, fontFamily);
 
     double y = 100;

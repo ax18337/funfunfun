@@ -232,10 +232,19 @@ class GameTime extends Game with KeyboardEvents {
   }
 
   void _checkLevelCompleted() {
-    if (trashPile != null ? trashPile.score > user.level * 10 : false) {
+    // level up
+    // every 20 trash objects collected / dropped to earth
+    if (trashPile != null
+        ? (trashPile.recycledCount + trashPile.pileCount) > user.level * 20
+        : false) {
       _increasedLevelTicks = 4;
       user.nextLevel();
     }
+
+    // if (trashPile != null ? trashPile.score > user.level * 5 : false) {
+    //   _increasedLevelTicks = 4;
+    //   user.nextLevel();
+    // }
   }
 
   bool isInside(Offset point) {
