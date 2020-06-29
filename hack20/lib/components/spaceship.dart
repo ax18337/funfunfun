@@ -10,6 +10,7 @@ import '../game_time.dart';
 
 const WHITE = Color(0xffffffff);
 const PURPLE = Color(0xff7df00fe);
+const RED = Color(0xffce0000);
 
 const BLACK = Color(0xff000000);
 
@@ -40,6 +41,7 @@ class Spaceship {
       ..isAntiAlias = true;
     _center = center;
     _path = _createPath();
+    _thrustPath = _createThrustPath();
     speed = Offset.zero;
     direction = _radians(270);
   }
@@ -54,6 +56,7 @@ class Spaceship {
 
   Offset _center;
   Path _path;
+  Path _thrustPath;
 
   double _thrust = 0;
   double _directionAngle = 0;
@@ -145,6 +148,9 @@ class Spaceship {
     }
     c.drawPath(_path, _backPaint);
     c.drawPath(_path, _retroPaint);
+    if (_thrust > 0) {
+      c.drawPath(_thrustPath, _retroPaint);
+    }
     c.restore();
   }
 
@@ -161,12 +167,19 @@ class Spaceship {
     c.drawPath(_path, _backPaint);
 
     Neon.render(c, _path, _futurePaint, 1);
+    if (_thrust > 0) {
+      Neon.render(c, _thrustPath, _futurePaint, 1);
+    }
 
     c.restore();
   }
 
   Path _createPath() {
     return Geometry.spaceship(_rect);
+  }
+
+  Path _createThrustPath() {
+    return Geometry.spaceshipThrust(_rect);
   }
 
   static const double SPEED_BOOST = 350;
@@ -198,6 +211,8 @@ class Spaceship {
     );
     speed = Offset.zero;
     _killed = 0;
+    _directionAngle = 0;
+    direction = _radians(270);
   }
 
   double distance(Offset point) {

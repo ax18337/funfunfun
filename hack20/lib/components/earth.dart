@@ -10,6 +10,8 @@ const GREEN = Color(0xff7fff00);
 const YELLOW = Color(0xffd9eb4b);
 const ORANGE = Color(0xfffc6e22);
 const RED = Color(0xffce0000);
+// const BLUE = Color(0xff4fb0d9);
+const BLUE = Color(0xff002eff);
 
 const BLACK = Color(0xfff000000);
 const DEEPBLUE = Color(0xff010b19);
@@ -143,6 +145,7 @@ class Earth {
     c.drawPath(area, _areaPaint);
 
     // outline
+    _futurePaint.color = BLUE;
     Neon.render(c, area, _futurePaint, 1);
 
     // continents
@@ -155,6 +158,7 @@ class Earth {
     c.translate(translation.dx, translation.dy);
     c.scale(scale);
 
+    _futurePaint.color = GREEN;
     Neon.render(c, _americas.path, _futurePaint, scale);
     Neon.render(c, _africaAsiaEurope.path, _futurePaint, scale);
     Neon.render(c, _arctic.path, _futurePaint, scale);

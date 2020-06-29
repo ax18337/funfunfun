@@ -7,7 +7,7 @@ import 'package:flame/keyboard.dart';
 import 'package:flutter/cupertino.dart';
 // ignore: implementation_imports
 import 'package:flutter/src/services/raw_keyboard.dart';
-import 'package:hack20/components/input-box.dart';
+import 'package:hack20/components/welcome.dart';
 
 import 'package:hack20/components/interlace.dart';
 import 'package:hack20/components/intro.dart';
@@ -30,7 +30,7 @@ class GameTime extends Game with KeyboardEvents {
     initialize;
   }
 
-  InputBox _nameDialog; // when updating name
+  Welcome _welcome; // when updating name
 
   Size screenSize;
   Mode mode;
@@ -58,7 +58,7 @@ class GameTime extends Game with KeyboardEvents {
   double _increasedLevelTicks = 5;
   User user;
 
-  static const int MAX_NAME_SIZE = 10;
+  static const int MAX_NAME_SIZE = 6;
 
   Future<void> get initialize async {
     final _size = await Flame.util.initialDimensions();
@@ -121,25 +121,24 @@ class GameTime extends Game with KeyboardEvents {
   void render(Canvas c) {
     background?.render(c);
 
-    if (_nameDialog != null) {
-      _nameDialog.render(c);
-      return; // modal
-    }
-
-    if (_showIntro) {
-      intro?.render(c);
-    } else if (_isGameEnded()) {
-      scoreboard?.render(c);
+    if (_welcome != null) {
+      _welcome.render(c);
     } else {
-      // components
-      earth?.render(c);
-      moon?.render(c);
-      trashPile?.render(c);
-      spaceship?.render(c);
-      if (_increasedLevelTicks > 0) {
-        level?.render(c);
+      if (_showIntro) {
+        intro?.render(c);
+      } else if (_isGameEnded()) {
+        scoreboard?.render(c);
+      } else {
+        // components
+        earth?.render(c);
+        moon?.render(c);
+        trashPile?.render(c);
+        spaceship?.render(c);
+        if (_increasedLevelTicks > 0) {
+          level?.render(c);
+        }
+        status?.render(c);
       }
-      status?.render(c);
     }
 
     // efffects
@@ -163,10 +162,10 @@ class GameTime extends Game with KeyboardEvents {
       spaceship?.update(t);
       status?.update(t);
       level?.update(t);
-
-      // efffects
-      interlace?.update(t);
     }
+
+    // efffects
+    interlace?.update(t);
 
     if (!_isGameEnded()) {
       _checkLevelCompleted();
@@ -178,10 +177,10 @@ class GameTime extends Game with KeyboardEvents {
 
   @override
   void onKeyEvent(RawKeyEvent event) {
-    if (_nameDialog != null) {
+    if (_welcome != null) {
       if (event is RawKeyUpEvent) {
         if (event.data.keyLabel == 'Enter' || event.data.keyLabel == 'Escape') {
-          _nameDialog = null;
+          _welcome = null;
         } else if (event.data.keyLabel == 'Backspace') {
           user.name = user.name.substring(0, user.name.length - 1);
         } else if (user.name.length < MAX_NAME_SIZE &&
@@ -233,10 +232,19 @@ class GameTime extends Game with KeyboardEvents {
   }
 
   void _checkLevelCompleted() {
-    if (trashPile != null ? trashPile.score > user.level * 10 : false) {
+    // level up
+    // every 20 trash objects collected / dropped to earth
+    if (trashPile != null
+        ? (trashPile.recycledCount + trashPile.pileCount) > user.level * 20
+        : false) {
       _increasedLevelTicks = 4;
       user.nextLevel();
     }
+
+    // if (trashPile != null ? trashPile.score > user.level * 5 : false) {
+    //   _increasedLevelTicks = 4;
+    //   user.nextLevel();
+    // }
   }
 
   bool isInside(Offset point) {
@@ -255,7 +263,7 @@ class GameTime extends Game with KeyboardEvents {
   }
 
   void _updateName() {
-    _nameDialog = new InputBox(gameTime: this);
+    _welcome = new Welcome(gameTime: this);
   }
 
   // perhaps filter for ASCII? or readable?
@@ -265,7 +273,7 @@ class GameTime extends Game with KeyboardEvents {
       !_isGameEnded() &&
       _increasedLevelTicks <= 0 &&
       !_showIntro &&
-      _nameDialog == null;
+      _welcome == null;
 
   void userLostLife() {
     user.lostLife();

@@ -61,13 +61,26 @@ class Geometry {
   }
 
   static Path spaceship(Rect rect) {
-    double width = rect.width * 0.5;
+    double width = rect.width * 0.6;
     Path path = Path();
     path.moveTo(rect.center.dx, rect.top);
     path.lineTo(rect.center.dx + width / 2, rect.bottom);
     path.lineTo(rect.center.dx, rect.bottom - width * 0.4);
     path.lineTo(rect.center.dx - width / 2, rect.bottom);
     path.close();
+    return path;
+  }
+
+  static Path spaceshipThrust(Rect rect) {
+    double width = rect.width * 0.25;
+    Path path = Path();
+    path.moveTo(rect.center.dx - width * 0.4, rect.bottom - width * 0.5);
+    path.lineTo(rect.center.dx - width * 0.5, rect.bottom + width);
+    path.lineTo(rect.center.dx - width * 0.25, rect.bottom);
+    path.lineTo(rect.center.dx, rect.bottom + width);
+    path.lineTo(rect.center.dx + width * 0.25, rect.bottom);
+    path.lineTo(rect.center.dx + width * 0.5, rect.bottom + width);
+    path.lineTo(rect.center.dx + width * 0.4, rect.bottom - width * 0.5);
     return path;
   }
 }
