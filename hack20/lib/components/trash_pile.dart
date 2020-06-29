@@ -69,7 +69,8 @@ class TrashPile {
       gameTime.userLostLife();
     }
 
-    for (var index in outOfScreen) {
+    // remove from higher index to lower
+    for (var index in outOfScreen..sort((a, b) => b.compareTo(a))) {
       _trash.removeAt(index);
     }
 
